@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CNC Laboratory Portal • Network Simulation & Analysis (VTU / NS-2)</title>
+  <meta name="description" content="Interactive code browser, syntax highlighted viewer, and topology visualizer for Computer Network Configuration (CNC) simulation lab.">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+<body>
+  <!-- Header Bar -->
+  <header class="top-header">
+    <div class="brand-area">
+      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle navigation menu">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+
+      <div class="brand-logo">CNC</div>
+      <div class="brand-text">
+        <h1>Computer Networks Laboratory</h1>
+        <p>Interactive NS-2 Simulation Portal • VTU</p>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <div class="search-bar">
+        <span class="search-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </span>
+        <input type="text" id="globalSearch" class="search-input" placeholder="Search code, topics..." autocomplete="off">
+        <kbd class="search-shortcut">/</kbd>
+      </div>
+
+      <button class="theme-toggle-btn" id="themeToggleBtn" aria-label="Toggle dark/light theme">
+        <span>🌓</span>
+        <span class="theme-text">Light</span>
+      </button>
+
+      <a href="https://github.com/Madvith-d/cnc" target="_blank" rel="noopener noreferrer" class="repo-link-btn" title="View repository on GitHub">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+        </svg>
+        <span>GitHub</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Application Layout -->
+  <div class="app-layout">
+    <!-- Left Navigation Sidebar -->
+    <aside class="app-sidebar" aria-label="Program navigation">
+      <div>
+        <div class="nav-group-title">PART A — NS2 SIMULATION LAB</div>
+        <ul class="nav-list">
+          <li>
+            <button class="nav-item-btn active" data-id="p1">
+              <div class="nav-item-left">
+                <span class="nav-badge">P1</span>
+                <span>3-Node Point-to-Point</span>
+              </div>
+              <span style="font-size: 0.72rem; color: var(--text-muted);">Queue/Drop</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-item-btn" data-id="p2">
+              <div class="nav-item-left">
+                <span class="nav-badge">P2</span>
+                <span>4-Node TCP vs UDP</span>
+              </div>
+              <span style="font-size: 0.72rem; color: var(--text-muted);">Throughput</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-item-btn" data-id="p3">
+              <div class="nav-item-left">
+                <span class="nav-badge">P3</span>
+                <span>Ethernet LAN (802.3)</span>
+              </div>
+              <span style="font-size: 0.72rem; color: var(--text-muted);">9 Nodes</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-item-btn" data-id="p4">
+              <div class="nav-item-left">
+                <span class="nav-badge">P4</span>
+                <span>Ping / Wireless Simulation</span>
+              </div>
+              <span style="font-size: 0.72rem; color: var(--text-muted);">Upcoming</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="nav-group-title">ENVIRONMENT & REFERENCE</div>
+        <ul class="nav-list">
+          <li>
+            <button class="nav-item-btn" data-id="setup">
+              <div class="nav-item-left">
+                <span class="nav-badge">ARCH</span>
+                <span>NS-2 Installation Script</span>
+              </div>
+              <span style="font-size: 0.72rem; color: var(--text-muted);">script.sh</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-item-btn" data-id="trace-guide">
+              <div class="nav-item-left">
+                <span class="nav-badge">DOCS</span>
+                <span>Trace File Anatomy</span>
+              </div>
+              <span style="font-size: 0.72rem; color: var(--text-muted);">out.tr</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <div class="sidebar-footer">
+        <div><strong>Shortcuts:</strong> <code>1</code>, <code>2</code>, <code>3</code> jump to labs</div>
+        <div><code>/</code> focus search • <code>t</code> toggle theme</div>
+        <div style="margin-top: 0.5rem; opacity: 0.7;">VTU 5th Sem Computer Networks Lab</div>
+      </div>
+    </aside>
+
+    <!-- Main Dynamic Content Wrapper -->
+    <main id="mainContent" class="main-wrapper" role="main">
+      <!-- Injected by app.js -->
+    </main>
+  </div>
+
+  <!-- Toast Notification Node -->
+  <div id="toastNotice" class="toast-notice" role="status" aria-live="polite"></div>
+
+  <!-- Application Scripts -->
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
+
