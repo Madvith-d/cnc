@@ -4,23 +4,23 @@
  */
 
 (function () {
-  "use strict";
+  'use strict';
 
   // State
-  let currentProgramId = "p1";
+  let currentProgramId = 'p1';
   let activeFileIndex = 0;
-  let activeTheme = localStorage.getItem("cnc_theme") || "dark";
+  let activeTheme = localStorage.getItem('cnc_theme') || 'dark';
 
   // Apply Theme
-  document.documentElement.setAttribute("data-theme", activeTheme);
+  document.documentElement.setAttribute('data-theme', activeTheme);
 
   // HTML Entity Escaper
   function escapeHtml(str) {
-    if (!str) return "";
+    if (!str) return '';
     return str
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;");
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
   }
 
   /* ===================================================================
@@ -29,32 +29,20 @@
 
   function highlightTcl(code) {
     const patterns = [
-      { type: "comment", regex: /^\s*#[^\r\n]*/ },
-      { type: "string", regex: /^"(?:\\.|[^"\\])*"/ },
-      { type: "variable", regex: /^\$[a-zA-Z0-9_]+/ },
-      {
-        type: "keyword",
-        regex:
-          /^(?:set|new|proc|global|exec|exit|close|open|catch|if|else|for|while|return|puts)\b/,
-      },
-      {
-        type: "class",
-        regex:
-          /^(?:Simulator|node|duplex-link|duplex-link-op|queue-limit|attach-agent|connect|at|run|flush-trace|trace-all|namtrace-all|make-lan|DropTail|Agent\/TCP|Agent\/TCPSink|Agent\/UDP|Agent\/Null|Application\/FTP|Application\/Traffic\/CBR|LL|Queue\/DropTail|Mac\/802_3|Channel)\b/,
-      },
-      { type: "number", regex: /^\b\d+(?:\.\d+)?(?:Mb|Kb|ms|s|mb|kb)?\b/ },
-      { type: "bracket", regex: /^[\[\]\{\}\(\)]/ },
-      {
-        type: "operator",
-        regex: /^(?:\+\+|--|\+=|-=|\*=|\/=|==|!=|<=|>=|&&|\|\||[+\-*\/=<>!&|])/,
-      },
-      { type: "text", regex: /^[a-zA-Z0-9_\-]+/ },
-      { type: "space", regex: /^\s+/ },
-      { type: "other", regex: /^./ },
+      { type: 'comment', regex: /^\s*#[^\r\n]*/ },
+      { type: 'string', regex: /^"(?:\\.|[^"\\])*"/ },
+      { type: 'variable', regex: /^\$[a-zA-Z0-9_]+/ },
+      { type: 'keyword', regex: /^(?:set|new|proc|global|exec|exit|close|open|catch|if|else|for|while|return|puts)\b/ },
+      { type: 'class', regex: /^(?:Simulator|node|duplex-link|duplex-link-op|queue-limit|attach-agent|connect|at|run|flush-trace|trace-all|namtrace-all|make-lan|DropTail|Agent\/TCP|Agent\/TCPSink|Agent\/UDP|Agent\/Null|Application\/FTP|Application\/Traffic\/CBR|LL|Queue\/DropTail|Mac\/802_3|Channel)\b/ },
+      { type: 'number', regex: /^\b\d+(?:\.\d+)?(?:Mb|Kb|ms|s|mb|kb)?\b/ },
+      { type: 'bracket', regex: /^[\[\]\{\}\(\)]/ },
+      { type: 'operator', regex: /^(?:\+\+|--|\+=|-=|\*=|\/=|==|!=|<=|>=|&&|\|\||[+\-*\/=<>!&|])/ },
+      { type: 'text', regex: /^[a-zA-Z0-9_\-]+/ },
+      { type: 'space', regex: /^\s+/ },
+      { type: 'other', regex: /^./ }
     ];
 
-    let i = 0,
-      html = "";
+    let i = 0, html = '';
     while (i < code.length) {
       let sub = code.slice(i);
       let matched = false;
@@ -62,7 +50,7 @@
         let m = sub.match(p.regex);
         if (m && m.index === 0) {
           let val = escapeHtml(m[0]);
-          if (p.type === "space" || p.type === "other" || p.type === "text") {
+          if (p.type === 'space' || p.type === 'other' || p.type === 'text') {
             html += val;
           } else {
             html += `<span class="token-${p.type}">${val}</span>`;
@@ -82,32 +70,20 @@
 
   function highlightAwk(code) {
     const patterns = [
-      { type: "comment", regex: /^\s*#[^\r\n]*/ },
-      { type: "string", regex: /^"(?:\\.|[^"\\])*"/ },
-      { type: "field", regex: /^\$[0-9]+/ },
-      {
-        type: "keyword",
-        regex:
-          /^(?:BEGIN|END|if|else|while|for|print|printf|sprintf|next|exit)\b/,
-      },
-      {
-        type: "operator",
-        regex: /^(?:\+\+|--|\+=|-=|\*=|\/=|==|!=|<=|>=|&&|\|\||[+\-*\/%=<>!])/,
-      },
-      { type: "number", regex: /^\b\d+(?:\.\d+)?\b/ },
-      { type: "bracket", regex: /^[\[\]\{\}\(\);,]/ },
-      {
-        type: "variable",
-        regex:
-          /^(?:ntcp|nudp|sSize|startTime|stopTime|tput|count|type|event|time|size|dropCount|packetSize)\b/,
-      },
-      { type: "text", regex: /^[a-zA-Z0-9_\-]+/ },
-      { type: "space", regex: /^\s+/ },
-      { type: "other", regex: /^./ },
+      { type: 'comment', regex: /^\s*#[^\r\n]*/ },
+      { type: 'string', regex: /^"(?:\\.|[^"\\])*"/ },
+      { type: 'field', regex: /^\$[0-9]+/ },
+      { type: 'keyword', regex: /^(?:BEGIN|END|if|else|while|for|print|printf|sprintf|next|exit)\b/ },
+      { type: 'operator', regex: /^(?:\+\+|--|\+=|-=|\*=|\/=|==|!=|<=|>=|&&|\|\||[+\-*\/%=<>!])/ },
+      { type: 'number', regex: /^\b\d+(?:\.\d+)?\b/ },
+      { type: 'bracket', regex: /^[\[\]\{\}\(\);,]/ },
+      { type: 'variable', regex: /^(?:ntcp|nudp|sSize|startTime|stopTime|tput|count|type|event|time|size|dropCount|packetSize)\b/ },
+      { type: 'text', regex: /^[a-zA-Z0-9_\-]+/ },
+      { type: 'space', regex: /^\s+/ },
+      { type: 'other', regex: /^./ }
     ];
 
-    let i = 0,
-      html = "";
+    let i = 0, html = '';
     while (i < code.length) {
       let sub = code.slice(i);
       let matched = false;
@@ -115,7 +91,7 @@
         let m = sub.match(p.regex);
         if (m && m.index === 0) {
           let val = escapeHtml(m[0]);
-          if (p.type === "space" || p.type === "other" || p.type === "text") {
+          if (p.type === 'space' || p.type === 'other' || p.type === 'text') {
             html += val;
           } else {
             html += `<span class="token-${p.type}">${val}</span>`;
@@ -135,29 +111,20 @@
 
   function highlightBash(code) {
     const patterns = [
-      { type: "comment", regex: /^\s*#[^\r\n]*/ },
-      { type: "string", regex: /^"(?:\\.|[^"\\])*"|^'(?:\\.|[^'\\])*'/ },
-      { type: "variable", regex: /^\$[a-zA-Z0-9_]+|^\$\{[^}]+\}/ },
-      {
-        type: "keyword",
-        regex:
-          /^(?:if|then|else|elif|fi|for|while|do|done|case|esac|function|exit|export|return)\b/,
-      },
-      {
-        type: "class",
-        regex:
-          /^(?:echo|sudo|pacman|yay|git|cd|makepkg|rm|tar|make|install|set|grep|awk|ns|nam)\b/,
-      },
-      { type: "number", regex: /^\b\d+\b/ },
-      { type: "bracket", regex: /^[\[\]\{\}\(\);]/ },
-      { type: "operator", regex: /^(?:&&|\|\||[=<>!|&])/ },
-      { type: "text", regex: /^[a-zA-Z0-9_\-\.\/]+/ },
-      { type: "space", regex: /^\s+/ },
-      { type: "other", regex: /^./ },
+      { type: 'comment', regex: /^\s*#[^\r\n]*/ },
+      { type: 'string', regex: /^"(?:\\.|[^"\\])*"|^'(?:\\.|[^'\\])*'/ },
+      { type: 'variable', regex: /^\$[a-zA-Z0-9_]+|^\$\{[^}]+\}/ },
+      { type: 'keyword', regex: /^(?:if|then|else|elif|fi|for|while|do|done|case|esac|function|exit|export|return)\b/ },
+      { type: 'class', regex: /^(?:echo|sudo|pacman|yay|git|cd|makepkg|rm|tar|make|install|set|grep|awk|ns|nam)\b/ },
+      { type: 'number', regex: /^\b\d+\b/ },
+      { type: 'bracket', regex: /^[\[\]\{\}\(\);]/ },
+      { type: 'operator', regex: /^(?:&&|\|\||[=<>!|&])/ },
+      { type: 'text', regex: /^[a-zA-Z0-9_\-\.\/]+/ },
+      { type: 'space', regex: /^\s+/ },
+      { type: 'other', regex: /^./ }
     ];
 
-    let i = 0,
-      html = "";
+    let i = 0, html = '';
     while (i < code.length) {
       let sub = code.slice(i);
       let matched = false;
@@ -165,7 +132,7 @@
         let m = sub.match(p.regex);
         if (m && m.index === 0) {
           let val = escapeHtml(m[0]);
-          if (p.type === "space" || p.type === "other" || p.type === "text") {
+          if (p.type === 'space' || p.type === 'other' || p.type === 'text') {
             html += val;
           } else {
             html += `<span class="token-${p.type}">${val}</span>`;
@@ -185,43 +152,22 @@
 
   function highlightPython(code) {
     const patterns = [
-      { type: "comment", regex: /^\s*#[^\r\n]*/ },
-      {
-        type: "string",
-        regex:
-          /^("""[\s\S]*?"""|'''[\s\S]*?'''|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*')/,
-      },
-      { type: "decorator", regex: /^@[a-zA-Z_][a-zA-Z0-9_.]*/ },
-      {
-        type: "keyword",
-        regex:
-          /^(?:def|class|import|from|as|return|if|elif|else|while|for|in|try|except|finally|with|pass|break|continue|lambda|yield|raise|assert|global|nonlocal|async|await)\b/,
-      },
-      { type: "boolean", regex: /^(?:True|False|None)\b/ },
-      {
-        type: "class",
-        regex:
-          /^(?:socket|AF_INET|SOCK_STREAM|SOCK_DGRAM|SOL_SOCKET|SO_REUSEADDR|threading|Thread|Process|Exception)\b/,
-      },
-      {
-        type: "builtin",
-        regex:
-          /^(?:print|input|range|len|int|str|float|bytes|bytearray|list|dict|set|tuple|open|type|enumerate|zip|sum|min|max|format|bin|hex|ord|chr)\b/,
-      },
-      { type: "number", regex: /^\b(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?\b/ },
-      { type: "bracket", regex: /^[\[\]\{\}\(\);,:]/ },
-      {
-        type: "operator",
-        regex:
-          /^(?:\*\*|\/\/|<<|>>|\+=|-=|\*=|\/=|%=|&=|\|=|\^=|==|!=|<=|>=|[+\-*\/%=<>!&|^~])/,
-      },
-      { type: "ident", regex: /^[a-zA-Z_][a-zA-Z0-9_]*/ },
-      { type: "space", regex: /^\s+/ },
-      { type: "other", regex: /^./ },
+      { type: 'comment', regex: /^\s*#[^\r\n]*/ },
+      { type: 'string', regex: /^("""[\s\S]*?"""|'''[\s\S]*?'''|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*')/ },
+      { type: 'decorator', regex: /^@[a-zA-Z_][a-zA-Z0-9_.]*/ },
+      { type: 'keyword', regex: /^(?:def|class|import|from|as|return|if|elif|else|while|for|in|try|except|finally|with|pass|break|continue|lambda|yield|raise|assert|global|nonlocal|async|await)\b/ },
+      { type: 'boolean', regex: /^(?:True|False|None)\b/ },
+      { type: 'class', regex: /^(?:socket|AF_INET|SOCK_STREAM|SOCK_DGRAM|SOL_SOCKET|SO_REUSEADDR|threading|Thread|Process|Exception)\b/ },
+      { type: 'builtin', regex: /^(?:print|input|range|len|int|str|float|bytes|bytearray|list|dict|set|tuple|open|type|enumerate|zip|sum|min|max|format|bin|hex|ord|chr)\b/ },
+      { type: 'number', regex: /^\b(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?\b/ },
+      { type: 'bracket', regex: /^[\[\]\{\}\(\);,:]/ },
+      { type: 'operator', regex: /^(?:\*\*|\/\/|<<|>>|\+=|-=|\*=|\/=|%=|&=|\|=|\^=|==|!=|<=|>=|[+\-*\/%=<>!&|^~])/ },
+      { type: 'ident', regex: /^[a-zA-Z_][a-zA-Z0-9_]*/ },
+      { type: 'space', regex: /^\s+/ },
+      { type: 'other', regex: /^./ }
     ];
 
-    let i = 0,
-      html = "";
+    let i = 0, html = '';
     while (i < code.length) {
       let sub = code.slice(i);
       let matched = false;
@@ -229,7 +175,7 @@
         let m = sub.match(p.regex);
         if (m && m.index === 0) {
           let val = escapeHtml(m[0]);
-          if (p.type === "space" || p.type === "other" || p.type === "ident") {
+          if (p.type === 'space' || p.type === 'other' || p.type === 'ident') {
             html += val;
           } else {
             html += `<span class="token-${p.type}">${val}</span>`;
@@ -249,33 +195,20 @@
 
   function highlightC(code) {
     const patterns = [
-      { type: "comment", regex: /^\/\/[^\r\n]*|^\/\*[\s\S]*?\*\// },
-      { type: "preprocessor", regex: /^#[a-zA-Z_]+(?:\s*<[^>]+>|\s*"[^"]+")?/ },
-      { type: "string", regex: /^"(?:\\.|[^"\\])*"|^'(?:\\.|[^'\\])*'/ },
-      {
-        type: "keyword",
-        regex:
-          /^(?:int|char|float|double|void|struct|union|typedef|enum|return|if|else|while|for|do|switch|case|break|continue|default|sizeof|static|const|extern|volatile|unsigned|signed|short|long)\b/,
-      },
-      {
-        type: "builtin",
-        regex:
-          /^(?:printf|scanf|malloc|free|calloc|realloc|exit|memset|memcpy|strcpy|strlen|strcmp|main)\b/,
-      },
-      { type: "number", regex: /^\b(?:0x[0-9a-fA-F]+|\d+(?:\.\d+)?)\b/ },
-      { type: "bracket", regex: /^[\[\]\{\}\(\);,]/ },
-      {
-        type: "operator",
-        regex:
-          /^(?:\+\+|--|->|<<|>>|\+=|-=|\*=|\/=|%=|&=|\|=|\^=|==|!=|<=|>=|[+\-*\/%=<>!&|^~])/,
-      },
-      { type: "ident", regex: /^[a-zA-Z_][a-zA-Z0-9_]*/ },
-      { type: "space", regex: /^\s+/ },
-      { type: "other", regex: /^./ },
+      { type: 'comment', regex: /^\/\/[^\r\n]*|^\/\*[\s\S]*?\*\// },
+      { type: 'preprocessor', regex: /^#[a-zA-Z_]+(?:\s*<[^>]+>|\s*"[^"]+")?/ },
+      { type: 'string', regex: /^"(?:\\.|[^"\\])*"|^'(?:\\.|[^'\\])*'/ },
+      { type: 'keyword', regex: /^(?:int|char|float|double|void|struct|union|typedef|enum|return|if|else|while|for|do|switch|case|break|continue|default|sizeof|static|const|extern|volatile|unsigned|signed|short|long)\b/ },
+      { type: 'builtin', regex: /^(?:printf|scanf|malloc|free|calloc|realloc|exit|memset|memcpy|strcpy|strlen|strcmp|main)\b/ },
+      { type: 'number', regex: /^\b(?:0x[0-9a-fA-F]+|\d+(?:\.\d+)?)\b/ },
+      { type: 'bracket', regex: /^[\[\]\{\}\(\);,]/ },
+      { type: 'operator', regex: /^(?:\+\+|--|->|<<|>>|\+=|-=|\*=|\/=|%=|&=|\|=|\^=|==|!=|<=|>=|[+\-*\/%=<>!&|^~])/ },
+      { type: 'ident', regex: /^[a-zA-Z_][a-zA-Z0-9_]*/ },
+      { type: 'space', regex: /^\s+/ },
+      { type: 'other', regex: /^./ }
     ];
 
-    let i = 0,
-      html = "";
+    let i = 0, html = '';
     while (i < code.length) {
       let sub = code.slice(i);
       let matched = false;
@@ -283,7 +216,7 @@
         let m = sub.match(p.regex);
         if (m && m.index === 0) {
           let val = escapeHtml(m[0]);
-          if (p.type === "space" || p.type === "other" || p.type === "ident") {
+          if (p.type === 'space' || p.type === 'other' || p.type === 'ident') {
             html += val;
           } else {
             html += `<span class="token-${p.type}">${val}</span>`;
@@ -302,12 +235,12 @@
   }
 
   function highlightCode(code, lang) {
-    if (!code) return "";
-    if (lang === "python" || lang === "py") return highlightPython(code);
-    if (lang === "c" || lang === "cpp" || lang === "h") return highlightC(code);
-    if (lang === "tcl") return highlightTcl(code);
-    if (lang === "awk") return highlightAwk(code);
-    if (lang === "bash" || lang === "sh") return highlightBash(code);
+    if (!code) return '';
+    if (lang === 'python' || lang === 'py') return highlightPython(code);
+    if (lang === 'c' || lang === 'cpp' || lang === 'h') return highlightC(code);
+    if (lang === 'tcl') return highlightTcl(code);
+    if (lang === 'awk') return highlightAwk(code);
+    if (lang === 'bash' || lang === 'sh') return highlightBash(code);
     return escapeHtml(code);
   }
 
@@ -316,7 +249,7 @@
      =================================================================== */
 
   function renderTopologySvg(programId) {
-    if (programId === "p1") {
+    if (programId === 'p1') {
       return `
         <svg viewBox="0 0 760 170" width="100%" height="170" xmlns="http://www.w3.org/2000/svg">
           <defs>
@@ -372,7 +305,7 @@
       `;
     }
 
-    if (programId === "p2") {
+    if (programId === 'p2') {
       return `
         <svg viewBox="0 0 760 250" width="100%" height="250" xmlns="http://www.w3.org/2000/svg">
           <defs>
@@ -423,7 +356,7 @@
       `;
     }
 
-    if (programId === "p3") {
+    if (programId === 'p3') {
       return `
         <svg viewBox="0 0 760 260" width="100%" height="260" xmlns="http://www.w3.org/2000/svg">
           <!-- Central Ethernet Bus Backbone -->
@@ -484,7 +417,7 @@
       `;
     }
 
-    if (programId === "p4") {
+    if (programId === 'p4') {
       return `
         <svg viewBox="0 0 760 260" width="100%" height="260" xmlns="http://www.w3.org/2000/svg">
           <defs>
@@ -570,64 +503,51 @@
     const data = window.CNC_DATA;
     if (!data) return;
 
-    const mainContainer = document.getElementById("mainContent");
+    const mainContainer = document.getElementById('mainContent');
     if (!mainContainer) return;
 
     // Check if view is setup guide
-    if (currentProgramId === "setup") {
+    if (currentProgramId === 'setup') {
       renderSetupGuide(mainContainer, data.setup);
       updateNavActive();
       return;
     }
 
     // Check if view is trace guide
-    if (currentProgramId === "trace-guide") {
+    if (currentProgramId === 'trace-guide') {
       renderTraceGuide(mainContainer, data.traceGuide);
       updateNavActive();
       return;
     }
 
     // Otherwise render standard lab program view
-    const prog =
-      data.programs.find(
-        (p) =>
-          p.id === currentProgramId ||
-          p.shortId === currentProgramId ||
-          "partA-" + currentProgramId === p.id ||
-          "partB-" + currentProgramId === p.id,
-      ) || data.programs[0];
+    const prog = data.programs.find(p =>
+      p.id === currentProgramId ||
+      p.shortId === currentProgramId ||
+      ('partA-' + currentProgramId) === p.id ||
+      ('partB-' + currentProgramId) === p.id
+    ) || data.programs[0];
 
     const activeFile = prog.files[activeFileIndex] || prog.files[0];
 
     // Compute line count and highlighted HTML
-    const rawLines = activeFile.content.split("\n");
+    const rawLines = activeFile.content.split('\n');
     const lineCount = rawLines.length;
     const highlightedHtml = highlightCode(activeFile.content, activeFile.lang);
 
     // Build Line Numbers HTML
-    let lineNumsHtml = "";
+    let lineNumsHtml = '';
     for (let l = 1; l <= lineCount; l++) {
       lineNumsHtml += `<span class="line-number">${l}</span>`;
     }
 
     // Build Tabs HTML
-    let tabsHtml = "";
+    let tabsHtml = '';
     prog.files.forEach((f, idx) => {
       const isActive = idx === activeFileIndex;
-      const icon =
-        f.lang === "tcl"
-          ? "⚡"
-          : f.lang === "awk"
-            ? "📊"
-            : f.lang === "python"
-              ? "🐍"
-              : f.lang === "c" || f.lang === "cpp"
-                ? "⚙️"
-                : f.lang === "bash"
-                  ? "🐚"
-                  : "📄";
+      const icon = f.lang === 'tcl' ? '⚡' : f.lang === 'awk' ? '📊' : f.lang === 'python' ? '🐍' : f.lang === 'c' || f.lang === 'cpp' ? '⚙️' : f.lang === 'bash' ? '🐚' : '📄';
       tabsHtml += `
-        <button class="code-tab-btn ${isActive ? "active" : ""}" data-file-idx="${idx}">
+        <button class="code-tab-btn ${isActive ? 'active' : ''}" data-file-idx="${idx}">
           <span class="file-icon">${icon}</span>
           <span>${f.name}</span>
         </button>
@@ -635,9 +555,9 @@
     });
 
     // Build Execution Commands HTML
-    let commandsHtml = "";
+    let commandsHtml = '';
     if (prog.execution && prog.execution.commands) {
-      prog.execution.commands.forEach((c) => {
+      prog.execution.commands.forEach(c => {
         commandsHtml += `
           <div class="command-item">
             <div class="command-chip" data-copy="${escapeHtml(c.cmd)}" title="Click to copy command">
@@ -651,7 +571,7 @@
     }
 
     // Topology section HTML (rendered ONLY if program has topology)
-    let topologySectionHtml = "";
+    let topologySectionHtml = '';
     if (prog.hasTopology && prog.topology) {
       topologySectionHtml = `
       <section class="topology-card">
@@ -701,16 +621,16 @@
       <header class="view-header">
         <div class="view-badge-row">
           <span class="pill-badge">${escapeHtml(prog.num)}</span>
-          <span class="pill-badge ${prog.category === "partB" ? "emerald" : "blue"}">${escapeHtml(prog.badge)}</span>
+          <span class="pill-badge ${prog.category === 'partB' ? 'emerald' : 'blue'}">${escapeHtml(prog.badge)}</span>
         </div>
         <h2 class="view-title">${escapeHtml(prog.title)}</h2>
         <p class="view-summary">${escapeHtml(prog.summary)}</p>
       </header>
 
       <!-- CRUCIAL USER REQUIREMENT: README inside each p[number] turned into Question -->
-      <section class="question-card ${prog.category === "partB" ? "part-b" : "part-a"}" aria-label="Problem Statement">
+      <section class="question-card ${prog.category === 'partB' ? 'part-b' : 'part-a'}" aria-label="Problem Statement">
         <div class="question-header">
-          <div class="question-label" ${prog.category === "partB" ? 'style="color: var(--accent-emerald);"' : ""}>
+          <div class="question-label" ${prog.category === 'partB' ? 'style="color: var(--accent-emerald);"' : ''}>
             <span style="font-size: 1rem;">🎯</span>
             <span>Problem Statement</span>
           </div>
@@ -761,14 +681,12 @@
         <div class="info-card">
           <h3 class="info-card-title">
             <span>⚙️</span>
-            <span>${prog.category === "partB" ? "Execution Steps" : "Simulation Execution Steps"}</span>
+            <span>${prog.category === 'partB' ? 'Execution Steps' : 'Simulation Execution Steps'}</span>
           </h3>
           <div class="command-list">
             ${commandsHtml}
           </div>
-          ${
-            prog.execution.tip
-              ? `
+          ${prog.execution.tip ? `
             <div class="callout-box">
               <span class="callout-icon">💡</span>
               <div>
@@ -776,9 +694,7 @@
                 ${escapeHtml(prog.execution.tip)}
               </div>
             </div>
-          `
-              : ""
-          }
+          ` : ''}
         </div>
 
         <div class="info-card">
@@ -803,17 +719,17 @@
   function renderSetupGuide(container, setup) {
     const activeFile = setup.files[activeFileIndex] || setup.files[0];
     const highlightedHtml = highlightCode(activeFile.content, activeFile.lang);
-    const lineCount = activeFile.content.split("\n").length;
+    const lineCount = activeFile.content.split('\n').length;
 
-    let lineNumsHtml = "";
+    let lineNumsHtml = '';
     for (let l = 1; l <= lineCount; l++) {
       lineNumsHtml += `<span class="line-number">${l}</span>`;
     }
 
-    let tabsHtml = "";
+    let tabsHtml = '';
     setup.files.forEach((f, idx) => {
       tabsHtml += `
-        <button class="code-tab-btn ${idx === activeFileIndex ? "active" : ""}" data-file-idx="${idx}">
+        <button class="code-tab-btn ${idx === activeFileIndex ? 'active' : ''}" data-file-idx="${idx}">
           <span class="file-icon">📜</span>
           <span>${f.name}</span>
         </button>
@@ -879,8 +795,8 @@
   }
 
   function renderTraceGuide(container, guide) {
-    let rowsHtml = "";
-    guide.fields.forEach((f) => {
+    let rowsHtml = '';
+    guide.fields.forEach(f => {
       rowsHtml += `
         <tr>
           <td><span class="trace-col-badge">${f.col}</span></td>
@@ -949,46 +865,43 @@
 
   function attachViewEvents(prog, activeFile) {
     // Tab switching
-    document.querySelectorAll(".code-tab-btn").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        activeFileIndex = parseInt(btn.getAttribute("data-file-idx"), 10);
+    document.querySelectorAll('.code-tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        activeFileIndex = parseInt(btn.getAttribute('data-file-idx'), 10);
         renderView();
       });
     });
 
     // Copy Question
-    const copyQBtn = document.getElementById("copyQuestionBtn");
+    const copyQBtn = document.getElementById('copyQuestionBtn');
     if (copyQBtn && prog.question) {
-      copyQBtn.addEventListener("click", () => {
-        copyToClipboard(prog.question, "Problem statement copied!");
+      copyQBtn.addEventListener('click', () => {
+        copyToClipboard(prog.question, 'Problem statement copied!');
       });
     }
 
     // Copy Code
-    const copyCBtn = document.getElementById("copyCodeBtn");
+    const copyCBtn = document.getElementById('copyCodeBtn');
     if (copyCBtn && activeFile) {
-      copyCBtn.addEventListener("click", () => {
-        copyToClipboard(
-          activeFile.content,
-          `${activeFile.name} copied to clipboard!`,
-        );
+      copyCBtn.addEventListener('click', () => {
+        copyToClipboard(activeFile.content, `${activeFile.name} copied to clipboard!`);
       });
     }
 
     // Download File
-    const downloadBtn = document.getElementById("downloadCodeBtn");
+    const downloadBtn = document.getElementById('downloadCodeBtn');
     if (downloadBtn && activeFile) {
-      downloadBtn.addEventListener("click", () => {
+      downloadBtn.addEventListener('click', () => {
         downloadFile(activeFile.name, activeFile.content);
       });
     }
 
     // Copy Command Chips
-    document.querySelectorAll(".command-chip").forEach((chip) => {
-      chip.addEventListener("click", () => {
-        const cmd = chip.getAttribute("data-copy");
+    document.querySelectorAll('.command-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        const cmd = chip.getAttribute('data-copy');
         if (cmd) {
-          copyToClipboard(cmd, "Command copied!");
+          copyToClipboard(cmd, 'Command copied!');
         }
       });
     });
@@ -996,39 +909,36 @@
 
   function copyToClipboard(text, message) {
     if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard
-        .writeText(text)
-        .then(() => {
-          showToast(message || "Copied to clipboard!");
-        })
-        .catch(() => {
-          fallbackCopy(text, message);
-        });
+      navigator.clipboard.writeText(text).then(() => {
+        showToast(message || 'Copied to clipboard!');
+      }).catch(() => {
+        fallbackCopy(text, message);
+      });
     } else {
       fallbackCopy(text, message);
     }
   }
 
   function fallbackCopy(text, message) {
-    const ta = document.createElement("textarea");
+    const ta = document.createElement('textarea');
     ta.value = text;
-    ta.style.position = "fixed";
-    ta.style.opacity = "0";
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
     document.body.appendChild(ta);
     ta.select();
     try {
-      document.execCommand("copy");
-      showToast(message || "Copied to clipboard!");
+      document.execCommand('copy');
+      showToast(message || 'Copied to clipboard!');
     } catch (e) {
-      showToast("Could not copy automatically");
+      showToast('Could not copy automatically');
     }
     document.body.removeChild(ta);
   }
 
   function downloadFile(filename, content) {
-    const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
+    const a = document.createElement('a');
     a.href = url;
     a.download = filename;
     document.body.appendChild(a);
@@ -1039,31 +949,31 @@
   }
 
   function showToast(msg) {
-    let toast = document.getElementById("toastNotice");
+    let toast = document.getElementById('toastNotice');
     if (!toast) {
-      toast = document.createElement("div");
-      toast.id = "toastNotice";
-      toast.className = "toast-notice";
+      toast = document.createElement('div');
+      toast.id = 'toastNotice';
+      toast.className = 'toast-notice';
       document.body.appendChild(toast);
     }
     toast.innerHTML = `<span class="toast-icon">✓</span><span>${escapeHtml(msg)}</span>`;
-    toast.classList.add("show");
+    toast.classList.add('show');
     clearTimeout(window._toastTimeout);
     window._toastTimeout = setTimeout(() => {
-      toast.classList.remove("show");
+      toast.classList.remove('show');
     }, 2400);
   }
 
   function updateNavActive() {
-    document.querySelectorAll(".nav-item-btn").forEach((btn) => {
-      const id = btn.getAttribute("data-id");
+    document.querySelectorAll('.nav-item-btn').forEach(btn => {
+      const id = btn.getAttribute('data-id');
       const matches =
         id === currentProgramId ||
         // short-form 'p1' → matches 'partA-p1' nav buttons
-        id === "partA-" + currentProgramId ||
+        (id === 'partA-' + currentProgramId) ||
         // short-form 'b-p1' → matches 'partB-p1' nav buttons
-        id === "partB-" + currentProgramId.replace(/^b-/, "");
-      btn.classList.toggle("active", matches);
+        (id === 'partB-' + currentProgramId.replace(/^b-/, ''));
+      btn.classList.toggle('active', matches);
     });
   }
 
@@ -1071,23 +981,18 @@
     const data = window.CNC_DATA;
     if (!data || !data.programs) return;
 
-    const partAList = document.getElementById("partANavList");
-    const partBList = document.getElementById("partBNavList");
+    const partAList = document.getElementById('partANavList');
+    const partBList = document.getElementById('partBNavList');
 
     if (partAList) {
-      let aHtml = "";
-      data.programs
-        .filter((p) => p.category === "partA")
-        .forEach((p) => {
-          const isAct =
-            p.id === currentProgramId || p.shortId === currentProgramId;
-          const badge = p.shortId
-            ? p.shortId.toUpperCase()
-            : p.num.replace("Program ", "P");
-          const displayTitle = p.title.split("&")[0].split("•")[0].trim();
-          aHtml += `
+      let aHtml = '';
+      data.programs.filter(p => p.category === 'partA').forEach(p => {
+        const isAct = p.id === currentProgramId || p.shortId === currentProgramId;
+        const badge = p.shortId ? p.shortId.toUpperCase() : p.num.replace('Program ', 'P');
+        const displayTitle = p.title.split('&')[0].split('•')[0].trim();
+        aHtml += `
           <li>
-            <button class="nav-item-btn part-a ${isAct ? "active" : ""}" data-id="${escapeHtml(p.id)}" data-part="a">
+            <button class="nav-item-btn part-a ${isAct ? 'active' : ''}" data-id="${escapeHtml(p.id)}" data-part="a">
               <div class="nav-item-left">
                 <span class="nav-badge">${escapeHtml(badge)}</span>
                 <span>${escapeHtml(displayTitle)}</span>
@@ -1096,28 +1001,23 @@
             </button>
           </li>
         `;
-        });
+      });
       partAList.innerHTML = aHtml;
     }
 
     if (partBList) {
-      let bHtml = "";
-      data.programs
-        .filter((p) => p.category === "partB")
-        .forEach((p) => {
-          const isAct =
-            p.id === currentProgramId || p.shortId === currentProgramId;
-          const badge = p.num.replace("Program ", "P");
-          const langSummary = p.files.some((f) => f.lang === "c")
-            ? `${p.files.length} C`
-            : `${p.files.length} py`;
-          let displayTitle = p.title;
-          if (displayTitle.includes("(")) {
-            displayTitle = displayTitle.split("(")[0].trim();
-          }
-          bHtml += `
+      let bHtml = '';
+      data.programs.filter(p => p.category === 'partB').forEach(p => {
+        const isAct = p.id === currentProgramId || p.shortId === currentProgramId;
+        const badge = p.num.replace('Program ', 'P');
+        const langSummary = p.files.some(f => f.lang === 'c') ? `${p.files.length} C` : `${p.files.length} py`;
+        let displayTitle = p.title;
+        if (displayTitle.includes('(')) {
+          displayTitle = displayTitle.split('(')[0].trim();
+        }
+        bHtml += `
           <li>
-            <button class="nav-item-btn part-b ${isAct ? "active" : ""}" data-id="${escapeHtml(p.id)}" data-part="b">
+            <button class="nav-item-btn part-b ${isAct ? 'active' : ''}" data-id="${escapeHtml(p.id)}" data-part="b">
               <div class="nav-item-left">
                 <span class="nav-badge" style="color: #10b981; border-color: rgba(16, 185, 129, 0.3);">${escapeHtml(badge)}</span>
                 <span>${escapeHtml(displayTitle)}</span>
@@ -1126,7 +1026,7 @@
             </button>
           </li>
         `;
-        });
+      });
       partBList.innerHTML = bHtml;
     }
   }
@@ -1140,46 +1040,45 @@
     renderSidebarNav();
 
     // Navigation Clicks (delegated to support dynamically rendered items)
-    document.querySelector(".app-sidebar")?.addEventListener("click", (e) => {
-      const btn = e.target.closest(".nav-item-btn");
+    document.querySelector('.app-sidebar')?.addEventListener('click', (e) => {
+      const btn = e.target.closest('.nav-item-btn');
       if (!btn) return;
-      const id = btn.getAttribute("data-id");
+      const id = btn.getAttribute('data-id');
       if (id) {
         currentProgramId = id;
         activeFileIndex = 0;
         location.hash = id;
         renderView();
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
 
         // Close mobile menu if open
-        document.querySelector(".app-sidebar")?.classList.remove("open");
+        document.querySelector('.app-sidebar')?.classList.remove('open');
       }
     });
 
     // Theme Toggle
-    const themeBtn = document.getElementById("themeToggleBtn");
+    const themeBtn = document.getElementById('themeToggleBtn');
     if (themeBtn) {
-      themeBtn.addEventListener("click", () => {
-        activeTheme = activeTheme === "dark" ? "light" : "dark";
-        document.documentElement.setAttribute("data-theme", activeTheme);
-        localStorage.setItem("cnc_theme", activeTheme);
-        themeBtn.querySelector(".theme-text").textContent =
-          activeTheme === "dark" ? "Light" : "Dark";
+      themeBtn.addEventListener('click', () => {
+        activeTheme = activeTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', activeTheme);
+        localStorage.setItem('cnc_theme', activeTheme);
+        themeBtn.querySelector('.theme-text').textContent = activeTheme === 'dark' ? 'Light' : 'Dark';
       });
     }
 
     // Mobile Menu Toggle
-    const mobileBtn = document.getElementById("mobileMenuBtn");
+    const mobileBtn = document.getElementById('mobileMenuBtn');
     if (mobileBtn) {
-      mobileBtn.addEventListener("click", () => {
-        document.querySelector(".app-sidebar")?.classList.toggle("open");
+      mobileBtn.addEventListener('click', () => {
+        document.querySelector('.app-sidebar')?.classList.toggle('open');
       });
     }
 
     // Global Search
-    const searchInput = document.getElementById("globalSearch");
+    const searchInput = document.getElementById('globalSearch');
     if (searchInput) {
-      searchInput.addEventListener("input", (e) => {
+      searchInput.addEventListener('input', (e) => {
         const query = e.target.value.toLowerCase().trim();
         if (!query) return;
 
@@ -1187,11 +1086,10 @@
         const data = window.CNC_DATA;
         if (!data) return;
 
-        const match = data.programs.find(
-          (p) =>
-            p.title.toLowerCase().includes(query) ||
-            p.question.toLowerCase().includes(query) ||
-            p.files.some((f) => f.content.toLowerCase().includes(query)),
+        const match = data.programs.find(p =>
+          p.title.toLowerCase().includes(query) ||
+          p.question.toLowerCase().includes(query) ||
+          p.files.some(f => f.content.toLowerCase().includes(query))
         );
 
         if (match && match.id !== currentProgramId) {
@@ -1203,50 +1101,25 @@
     }
 
     // Keyboard Shortcuts
-    document.addEventListener("keydown", (e) => {
+    document.addEventListener('keydown', (e) => {
       // Focus search on '/'
-      if (e.key === "/" && document.activeElement !== searchInput) {
+      if (e.key === '/' && document.activeElement !== searchInput) {
         e.preventDefault();
         searchInput?.focus();
       }
       // Jump to p1, p2, p3, p4 on numbers 1, 2, 3, 4
-      if (!["INPUT", "TEXTAREA"].includes(document.activeElement?.tagName)) {
-        if (e.key === "1") {
-          currentProgramId = "p1";
-          activeFileIndex = 0;
-          renderView();
-        }
-        if (e.key === "2") {
-          currentProgramId = "p2";
-          activeFileIndex = 0;
-          renderView();
-        }
-        if (e.key === "3") {
-          currentProgramId = "p3";
-          activeFileIndex = 0;
-          renderView();
-        }
-        if (e.key === "4") {
-          currentProgramId = "p4";
-          activeFileIndex = 0;
-          renderView();
-        }
-        if (e.key === "t" || e.key === "T") {
-          themeBtn?.click();
-        }
+      if (!['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) {
+        if (e.key === '1') { currentProgramId = 'p1'; activeFileIndex = 0; renderView(); }
+        if (e.key === '2') { currentProgramId = 'p2'; activeFileIndex = 0; renderView(); }
+        if (e.key === '3') { currentProgramId = 'p3'; activeFileIndex = 0; renderView(); }
+        if (e.key === '4') { currentProgramId = 'p4'; activeFileIndex = 0; renderView(); }
+        if (e.key === 't' || e.key === 'T') { themeBtn?.click(); }
       }
     });
 
     // Check Hash on Load
-    const hash = window.location.hash.replace("#", "");
-    if (
-      hash &&
-      (hash.startsWith("p") ||
-        hash.startsWith("part") ||
-        hash.startsWith("b-") ||
-        hash === "setup" ||
-        hash === "trace-guide")
-    ) {
+    const hash = window.location.hash.replace('#', '');
+    if (hash && (hash.startsWith('p') || hash.startsWith('part') || hash.startsWith('b-') || hash === 'setup' || hash === 'trace-guide')) {
       currentProgramId = hash;
     }
 
@@ -1255,9 +1128,11 @@
   }
 
   // Run on DOM ready
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initApp);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initApp);
   } else {
     initApp();
   }
+
 })();
+
