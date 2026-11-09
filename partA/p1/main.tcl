@@ -20,11 +20,11 @@ set n0 [$ns node]
 set n1 [$ns node]
 set n2 [$ns node]
 
-$ns duplex-link $n0 $n1 1Mb 10ms DropTail
-$ns duplex-link $n1 $n2 1Mb 10ms DropTail
+$ns duplex-link $n0 $n1 500Kb  10ms DropTail
+$ns duplex-link $n1 $n2 500Kb  10ms DropTail
 
-$ns queue-limit $n0 $n1 50
-$ns queue-limit $n1 $n2 50
+$ns queue-limit $n0 $n1 5
+$ns queue-limit $n1 $n2 5
 
 set udp [new Agent/UDP]
 $ns attach-agent $n0 $udp
