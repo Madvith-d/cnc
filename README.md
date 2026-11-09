@@ -80,6 +80,32 @@ You can also host it on **GitHub Pages** for free under **Repository Settings �
 
 ---
 
+### Program 4: Ethernet LAN Multi-Traffic, Collisions & Congestion Window (cwnd)
+* **Question:** *Simulate an Ethernet LAN using N nodes and set multiple traffic nodes and determine collision across different nodes, also plot congestion window for different source/destination.*
+* **Directory:** [`partA/p4/`](partA/p4/)
+* **Files:**
+  * [`main.tcl`](partA/p4/main.tcl): Dual TCP traffic sources with `cwnd_` tracing into `file1.tr` and `file2.tr`.
+  * [`main.awk`](partA/p4/main.awk): Extracts time and window size for plotting with `xgraph`.
+* **Execution:**
+  ```bash
+  cd partA/p4
+  ns main.tcl
+  awk -f main.awk file1.tr > graph1.tr
+  awk -f main.awk file2.tr > graph2.tr
+  xgraph graph1.tr graph2.tr &
+  ```
+
+---
+
+## 🐍 Part B: Python Network Implementations
+
+Part B programs (`p1` - `p6`) are implemented in Python. The website auto-detects all files without requiring a specific `main` file or topology diagram:
+* **Automatic Question:** Any `README.md` inside `partB/p[1-6]` is rendered as the problem statement.
+* **Multi-file Python Tabs:** Drop any `.py` files (e.g. `server.py`, `client.py`, `crc.py`) into `partB/p[number]/` and they automatically become syntax-highlighted tabs.
+* **Auto-Sync:** Run `./sync.py` or `git commit` to automatically update the website.
+
+---
+
 ## 🛠️ Environment Setup (Arch Linux / Garuda / Manjaro)
 
 Automated script [`script.sh`](script.sh) is provided to install GCC 4.8 and build **NS-2.35** and **NAM-1.15**:

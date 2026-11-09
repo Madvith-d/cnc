@@ -1,0 +1,21 @@
+{
+  "name": "cnc-lab-portal",
+  "version": "1.0.0",
+  "description": "Interactive website and NS-2 code browser for Computer Networks Laboratory",
+  "scripts": {
+    "sync": "python3 sync.py",
+    "start": "python3 -m http.server 8000",
+    "dev": "python3 -m http.server 8000"
+  },
+  "keywords": [
+    "ns2",
+    "simulation",
+    "vtu",
+    "tcl",
+    "awk",
+    "networking"
+  ],
+  "author": "Madvith",
+  "license": "MIT"
+}
+

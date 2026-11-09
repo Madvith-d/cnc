@@ -60,43 +60,15 @@
     <aside class="app-sidebar" aria-label="Program navigation">
       <div>
         <div class="nav-group-title">PART A — NS2 SIMULATION LAB</div>
-        <ul class="nav-list">
-          <li>
-            <button class="nav-item-btn active" data-id="p1">
-              <div class="nav-item-left">
-                <span class="nav-badge">P1</span>
-                <span>3-Node Point-to-Point</span>
-              </div>
-              <span style="font-size: 0.72rem; color: var(--text-muted);">Queue/Drop</span>
-            </button>
-          </li>
-          <li>
-            <button class="nav-item-btn" data-id="p2">
-              <div class="nav-item-left">
-                <span class="nav-badge">P2</span>
-                <span>4-Node TCP vs UDP</span>
-              </div>
-              <span style="font-size: 0.72rem; color: var(--text-muted);">Throughput</span>
-            </button>
-          </li>
-          <li>
-            <button class="nav-item-btn" data-id="p3">
-              <div class="nav-item-left">
-                <span class="nav-badge">P3</span>
-                <span>Ethernet LAN (802.3)</span>
-              </div>
-              <span style="font-size: 0.72rem; color: var(--text-muted);">9 Nodes</span>
-            </button>
-          </li>
-          <li>
-            <button class="nav-item-btn" data-id="p4">
-              <div class="nav-item-left">
-                <span class="nav-badge">P4</span>
-                <span>Ping / Wireless Simulation</span>
-              </div>
-              <span style="font-size: 0.72rem; color: var(--text-muted);">Upcoming</span>
-            </button>
-          </li>
+        <ul class="nav-list" id="partANavList">
+          <!-- Dynamically populated from data.js -->
+        </ul>
+      </div>
+
+      <div>
+        <div class="nav-group-title">PART B — PYTHON NETWORK LAB</div>
+        <ul class="nav-list" id="partBNavList">
+          <!-- Dynamically populated from data.js -->
         </ul>
       </div>
 

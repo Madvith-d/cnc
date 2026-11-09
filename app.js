@@ -4,23 +4,23 @@
  */
 
 (function () {
-  'use strict';
+  "use strict";
 
   // State
-  let currentProgramId = 'p1';
+  let currentProgramId = "p1";
   let activeFileIndex = 0;
-  let activeTheme = localStorage.getItem('cnc_theme') || 'dark';
+  let activeTheme = localStorage.getItem("cnc_theme") || "dark";
 
   // Apply Theme
-  document.documentElement.setAttribute('data-theme', activeTheme);
+  document.documentElement.setAttribute("data-theme", activeTheme);
 
   // HTML Entity Escaper
   function escapeHtml(str) {
-    if (!str) return '';
+    if (!str) return "";
     return str
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;');
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
   }
 
   /* ===================================================================
@@ -29,20 +29,32 @@
 
   function highlightTcl(code) {
     const patterns = [
-      { type: 'comment', regex: /^\s*#[^\r\n]*/ },
-      { type: 'string', regex: /^"(?:\\.|[^"\\])*"/ },
-      { type: 'variable', regex: /^\$[a-zA-Z0-9_]+/ },
-      { type: 'keyword', regex: /^(?:set|new|proc|global|exec|exit|close|open|catch|if|else|for|while|return|puts)\b/ },
-      { type: 'class', regex: /^(?:Simulator|node|duplex-link|duplex-link-op|queue-limit|attach-agent|connect|at|run|flush-trace|trace-all|namtrace-all|make-lan|DropTail|Agent\/TCP|Agent\/TCPSink|Agent\/UDP|Agent\/Null|Application\/FTP|Application\/Traffic\/CBR|LL|Queue\/DropTail|Mac\/802_3|Channel)\b/ },
-      { type: 'number', regex: /^\b\d+(?:\.\d+)?(?:Mb|Kb|ms|s|mb|kb)?\b/ },
-      { type: 'bracket', regex: /^[\[\]\{\}\(\)]/ },
-      { type: 'operator', regex: /^(?:\+\+|--|\+=|-=|\*=|\/=|==|!=|<=|>=|&&|\|\||[+\-*\/=<>!&|])/ },
-      { type: 'text', regex: /^[a-zA-Z0-9_\-]+/ },
-      { type: 'space', regex: /^\s+/ },
-      { type: 'other', regex: /^./ }
+      { type: "comment", regex: /^\s*#[^\r\n]*/ },
+      { type: "string", regex: /^"(?:\\.|[^"\\])*"/ },
+      { type: "variable", regex: /^\$[a-zA-Z0-9_]+/ },
+      {
+        type: "keyword",
+        regex:
+          /^(?:set|new|proc|global|exec|exit|close|open|catch|if|else|for|while|return|puts)\b/,
+      },
+      {
+        type: "class",
+        regex:
+          /^(?:Simulator|node|duplex-link|duplex-link-op|queue-limit|attach-agent|connect|at|run|flush-trace|trace-all|namtrace-all|make-lan|DropTail|Agent\/TCP|Agent\/TCPSink|Agent\/UDP|Agent\/Null|Application\/FTP|Application\/Traffic\/CBR|LL|Queue\/DropTail|Mac\/802_3|Channel)\b/,
+      },
+      { type: "number", regex: /^\b\d+(?:\.\d+)?(?:Mb|Kb|ms|s|mb|kb)?\b/ },
+      { type: "bracket", regex: /^[\[\]\{\}\(\)]/ },
+      {
+        type: "operator",
+        regex: /^(?:\+\+|--|\+=|-=|\*=|\/=|==|!=|<=|>=|&&|\|\||[+\-*\/=<>!&|])/,
+      },
+      { type: "text", regex: /^[a-zA-Z0-9_\-]+/ },
+      { type: "space", regex: /^\s+/ },
+      { type: "other", regex: /^./ },
     ];
 
-    let i = 0, html = '';
+    let i = 0,
+      html = "";
     while (i < code.length) {
       let sub = code.slice(i);
       let matched = false;
@@ -50,7 +62,7 @@
         let m = sub.match(p.regex);
         if (m && m.index === 0) {
           let val = escapeHtml(m[0]);
-          if (p.type === 'space' || p.type === 'other' || p.type === 'text') {
+          if (p.type === "space" || p.type === "other" || p.type === "text") {
             html += val;
           } else {
             html += `<span class="token-${p.type}">${val}</span>`;
@@ -70,20 +82,32 @@
 
   function highlightAwk(code) {
     const patterns = [
-      { type: 'comment', regex: /^\s*#[^\r\n]*/ },
-      { type: 'string', regex: /^"(?:\\.|[^"\\])*"/ },
-      { type: 'field', regex: /^\$[0-9]+/ },
-      { type: 'keyword', regex: /^(?:BEGIN|END|if|else|while|for|print|printf|sprintf|next|exit)\b/ },
-      { type: 'operator', regex: /^(?:\+\+|--|\+=|-=|\*=|\/=|==|!=|<=|>=|&&|\|\||[+\-*\/%=<>!])/ },
-      { type: 'number', regex: /^\b\d+(?:\.\d+)?\b/ },
-      { type: 'bracket', regex: /^[\[\]\{\}\(\);,]/ },
-      { type: 'variable', regex: /^(?:ntcp|nudp|sSize|startTime|stopTime|tput|count|type|event|time|size|dropCount|packetSize)\b/ },
-      { type: 'text', regex: /^[a-zA-Z0-9_\-]+/ },
-      { type: 'space', regex: /^\s+/ },
-      { type: 'other', regex: /^./ }
+      { type: "comment", regex: /^\s*#[^\r\n]*/ },
+      { type: "string", regex: /^"(?:\\.|[^"\\])*"/ },
+      { type: "field", regex: /^\$[0-9]+/ },
+      {
+        type: "keyword",
+        regex:
+          /^(?:BEGIN|END|if|else|while|for|print|printf|sprintf|next|exit)\b/,
+      },
+      {
+        type: "operator",
+        regex: /^(?:\+\+|--|\+=|-=|\*=|\/=|==|!=|<=|>=|&&|\|\||[+\-*\/%=<>!])/,
+      },
+      { type: "number", regex: /^\b\d+(?:\.\d+)?\b/ },
+      { type: "bracket", regex: /^[\[\]\{\}\(\);,]/ },
+      {
+        type: "variable",
+        regex:
+          /^(?:ntcp|nudp|sSize|startTime|stopTime|tput|count|type|event|time|size|dropCount|packetSize)\b/,
+      },
+      { type: "text", regex: /^[a-zA-Z0-9_\-]+/ },
+      { type: "space", regex: /^\s+/ },
+      { type: "other", regex: /^./ },
     ];
 
-    let i = 0, html = '';
+    let i = 0,
+      html = "";
     while (i < code.length) {
       let sub = code.slice(i);
       let matched = false;
@@ -91,7 +115,7 @@
         let m = sub.match(p.regex);
         if (m && m.index === 0) {
           let val = escapeHtml(m[0]);
-          if (p.type === 'space' || p.type === 'other' || p.type === 'text') {
+          if (p.type === "space" || p.type === "other" || p.type === "text") {
             html += val;
           } else {
             html += `<span class="token-${p.type}">${val}</span>`;
@@ -111,20 +135,29 @@
 
   function highlightBash(code) {
     const patterns = [
-      { type: 'comment', regex: /^\s*#[^\r\n]*/ },
-      { type: 'string', regex: /^"(?:\\.|[^"\\])*"|^'(?:\\.|[^'\\])*'/ },
-      { type: 'variable', regex: /^\$[a-zA-Z0-9_]+|^\$\{[^}]+\}/ },
-      { type: 'keyword', regex: /^(?:if|then|else|elif|fi|for|while|do|done|case|esac|function|exit|export|return)\b/ },
-      { type: 'class', regex: /^(?:echo|sudo|pacman|yay|git|cd|makepkg|rm|tar|make|install|set|grep|awk|ns|nam)\b/ },
-      { type: 'number', regex: /^\b\d+\b/ },
-      { type: 'bracket', regex: /^[\[\]\{\}\(\);]/ },
-      { type: 'operator', regex: /^(?:&&|\|\||[=<>!|&])/ },
-      { type: 'text', regex: /^[a-zA-Z0-9_\-\.\/]+/ },
-      { type: 'space', regex: /^\s+/ },
-      { type: 'other', regex: /^./ }
+      { type: "comment", regex: /^\s*#[^\r\n]*/ },
+      { type: "string", regex: /^"(?:\\.|[^"\\])*"|^'(?:\\.|[^'\\])*'/ },
+      { type: "variable", regex: /^\$[a-zA-Z0-9_]+|^\$\{[^}]+\}/ },
+      {
+        type: "keyword",
+        regex:
+          /^(?:if|then|else|elif|fi|for|while|do|done|case|esac|function|exit|export|return)\b/,
+      },
+      {
+        type: "class",
+        regex:
+          /^(?:echo|sudo|pacman|yay|git|cd|makepkg|rm|tar|make|install|set|grep|awk|ns|nam)\b/,
+      },
+      { type: "number", regex: /^\b\d+\b/ },
+      { type: "bracket", regex: /^[\[\]\{\}\(\);]/ },
+      { type: "operator", regex: /^(?:&&|\|\||[=<>!|&])/ },
+      { type: "text", regex: /^[a-zA-Z0-9_\-\.\/]+/ },
+      { type: "space", regex: /^\s+/ },
+      { type: "other", regex: /^./ },
     ];
 
-    let i = 0, html = '';
+    let i = 0,
+      html = "";
     while (i < code.length) {
       let sub = code.slice(i);
       let matched = false;
@@ -132,7 +165,71 @@
         let m = sub.match(p.regex);
         if (m && m.index === 0) {
           let val = escapeHtml(m[0]);
-          if (p.type === 'space' || p.type === 'other' || p.type === 'text') {
+          if (p.type === "space" || p.type === "other" || p.type === "text") {
+            html += val;
+          } else {
+            html += `<span class="token-${p.type}">${val}</span>`;
+          }
+          i += m[0].length;
+          matched = true;
+          break;
+        }
+      }
+      if (!matched) {
+        html += escapeHtml(sub[0]);
+        i++;
+      }
+    }
+    return html;
+  }
+
+  function highlightPython(code) {
+    const patterns = [
+      { type: "comment", regex: /^\s*#[^\r\n]*/ },
+      {
+        type: "string",
+        regex:
+          /^("""[\s\S]*?"""|'''[\s\S]*?'''|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*')/,
+      },
+      { type: "decorator", regex: /^@[a-zA-Z_][a-zA-Z0-9_.]*/ },
+      {
+        type: "keyword",
+        regex:
+          /^(?:def|class|import|from|as|return|if|elif|else|while|for|in|try|except|finally|with|pass|break|continue|lambda|yield|raise|assert|global|nonlocal|async|await)\b/,
+      },
+      { type: "boolean", regex: /^(?:True|False|None)\b/ },
+      {
+        type: "class",
+        regex:
+          /^(?:socket|AF_INET|SOCK_STREAM|SOCK_DGRAM|SOL_SOCKET|SO_REUSEADDR|threading|Thread|Process|Exception)\b/,
+      },
+      {
+        type: "builtin",
+        regex:
+          /^(?:print|input|range|len|int|str|float|bytes|bytearray|list|dict|set|tuple|open|type|enumerate|zip|sum|min|max|format|bin|hex|ord|chr)\b/,
+      },
+      { type: "number", regex: /^\b(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?\b/ },
+      { type: "bracket", regex: /^[\[\]\{\}\(\);,:]/ },
+      {
+        type: "operator",
+        regex:
+          /^(?:\*\*|\/\/|<<|>>|\+=|-=|\*=|\/=|%=|&=|\|=|\^=|==|!=|<=|>=|[+\-*\/%=<>!&|^~])/,
+      },
+      { type: "ident", regex: /^[a-zA-Z_][a-zA-Z0-9_]*/ },
+      { type: "space", regex: /^\s+/ },
+      { type: "other", regex: /^./ },
+    ];
+
+    let i = 0,
+      html = "";
+    while (i < code.length) {
+      let sub = code.slice(i);
+      let matched = false;
+      for (let p of patterns) {
+        let m = sub.match(p.regex);
+        if (m && m.index === 0) {
+          let val = escapeHtml(m[0]);
+          if (p.type === "space" || p.type === "other" || p.type === "ident") {
             html += val;
           } else {
             html += `<span class="token-${p.type}">${val}</span>`;
@@ -151,10 +248,11 @@
   }
 
   function highlightCode(code, lang) {
-    if (!code) return '';
-    if (lang === 'tcl') return highlightTcl(code);
-    if (lang === 'awk') return highlightAwk(code);
-    if (lang === 'bash' || lang === 'sh') return highlightBash(code);
+    if (!code) return "";
+    if (lang === "python" || lang === "py") return highlightPython(code);
+    if (lang === "tcl") return highlightTcl(code);
+    if (lang === "awk") return highlightAwk(code);
+    if (lang === "bash" || lang === "sh") return highlightBash(code);
     return escapeHtml(code);
   }
 
@@ -163,7 +261,7 @@
      =================================================================== */
 
   function renderTopologySvg(programId) {
-    if (programId === 'p1') {
+    if (programId === "p1") {
       return `
         <svg viewBox="0 0 760 170" width="100%" height="170" xmlns="http://www.w3.org/2000/svg">
           <defs>
@@ -219,7 +317,7 @@
       `;
     }
 
-    if (programId === 'p2') {
+    if (programId === "p2") {
       return `
         <svg viewBox="0 0 760 250" width="100%" height="250" xmlns="http://www.w3.org/2000/svg">
           <defs>
@@ -270,7 +368,7 @@
       `;
     }
 
-    if (programId === 'p3') {
+    if (programId === "p3") {
       return `
         <svg viewBox="0 0 760 260" width="100%" height="260" xmlns="http://www.w3.org/2000/svg">
           <!-- Central Ethernet Bus Backbone -->
@@ -331,6 +429,77 @@
       `;
     }
 
+    if (programId === "p4") {
+      return `
+        <svg viewBox="0 0 760 260" width="100%" height="260" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arr-p4-blue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 1 L 10 5 L 0 9 z" fill="#38bdf8"/>
+            </marker>
+            <marker id="arr-p4-cyan" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 1 L 10 5 L 0 9 z" fill="#06b6d4"/>
+            </marker>
+          </defs>
+          <!-- Central Ethernet Bus Backbone -->
+          <rect x="70" y="115" width="480" height="12" rx="6" fill="#38bdf8"/>
+          <text x="310" y="105" fill="#38bdf8" font-size="11" font-family="monospace" text-anchor="middle" font-weight="700">
+            Ethernet Bus (make-lan): 10Mb • 10ms • Mac/802_3
+          </text>
+
+          <!-- Drop Lines to Bus -->
+          <line x1="110" y1="55" x2="110" y2="115" stroke="#64748b" stroke-width="2"/>
+          <line x1="210" y1="55" x2="210" y2="115" stroke="#64748b" stroke-width="2"/>
+          <line x1="310" y1="55" x2="310" y2="115" stroke="#64748b" stroke-width="2"/>
+          <line x1="410" y1="55" x2="410" y2="115" stroke="#64748b" stroke-width="2"/>
+
+          <line x1="110" y1="185" x2="110" y2="127" stroke="#64748b" stroke-width="2"/>
+          <line x1="210" y1="185" x2="210" y2="127" stroke="#64748b" stroke-width="2"/>
+          <line x1="310" y1="185" x2="310" y2="127" stroke="#64748b" stroke-width="2"/>
+          <line x1="410" y1="185" x2="410" y2="127" stroke="#64748b" stroke-width="2"/>
+
+          <!-- Top Row Nodes: Src1 (n0), Src2 (n1), n2, n3 -->
+          <circle cx="110" cy="45" r="22" fill="#1e293b" stroke="#38bdf8" stroke-width="2.5"/>
+          <text x="110" y="49" fill="#f8fafc" font-size="11" font-weight="700" text-anchor="middle">n0</text>
+          <text x="110" y="18" fill="#38bdf8" font-size="10" font-weight="700" text-anchor="middle">Src1 (TCP0)</text>
+
+          <circle cx="210" cy="45" r="22" fill="#1e293b" stroke="#06b6d4" stroke-width="2.5"/>
+          <text x="210" y="49" fill="#f8fafc" font-size="11" font-weight="700" text-anchor="middle">n1</text>
+          <text x="210" y="18" fill="#06b6d4" font-size="10" font-weight="700" text-anchor="middle">Src2 (TCP1)</text>
+
+          <circle cx="310" cy="45" r="18" fill="#1e293b" stroke="#64748b" stroke-width="1.5"/>
+          <text x="310" y="49" fill="#94a3b8" font-size="10" text-anchor="middle">n2</text>
+
+          <circle cx="410" cy="45" r="18" fill="#1e293b" stroke="#64748b" stroke-width="1.5"/>
+          <text x="410" y="49" fill="#94a3b8" font-size="10" text-anchor="middle">n3</text>
+
+          <!-- Bottom Row Nodes: n4, n5, Dst2 (n6), Gateway (n7) -->
+          <circle cx="110" cy="195" r="18" fill="#1e293b" stroke="#64748b" stroke-width="1.5"/>
+          <text x="110" y="199" fill="#94a3b8" font-size="10" text-anchor="middle">n4</text>
+
+          <circle cx="210" cy="195" r="18" fill="#1e293b" stroke="#64748b" stroke-width="1.5"/>
+          <text x="210" y="199" fill="#94a3b8" font-size="10" text-anchor="middle">n5</text>
+
+          <circle cx="310" cy="195" r="22" fill="#1e293b" stroke="#06b6d4" stroke-width="2.5"/>
+          <text x="310" y="199" fill="#f8fafc" font-size="11" font-weight="700" text-anchor="middle">n6</text>
+          <text x="310" y="232" fill="#06b6d4" font-size="10" font-weight="700" text-anchor="middle">Dst2 (Sink2)</text>
+
+          <circle cx="410" cy="195" r="22" fill="#1e293b" stroke="#f59e0b" stroke-width="2"/>
+          <text x="410" y="199" fill="#f8fafc" font-size="11" font-weight="700" text-anchor="middle">n7</text>
+          <text x="410" y="232" fill="#f59e0b" font-size="10" font-weight="600" text-anchor="middle">Gateway</text>
+
+          <!-- Duplex Link n7 -> n8 -->
+          <line x1="432" y1="195" x2="610" y2="195" stroke="#f43f5e" stroke-width="3"/>
+          <rect x="475" y="168" width="115" height="18" rx="3" fill="#1e293b" stroke="#f43f5e" stroke-width="1"/>
+          <text x="532" y="181" fill="#f43f5e" font-size="10" font-family="monospace" text-anchor="middle">1Mb • 1ms (Q:5)</text>
+
+          <!-- Destination Node n8 (Dst1) -->
+          <circle cx="635" cy="195" r="24" fill="#1e293b" stroke="#38bdf8" stroke-width="2.5"/>
+          <text x="635" y="199" fill="#f8fafc" font-size="12" font-weight="700" text-anchor="middle">n8</text>
+          <text x="635" y="234" fill="#38bdf8" font-size="10" font-weight="700" text-anchor="middle">Dst1 (Sink1)</text>
+        </svg>
+      `;
+    }
+
     return `
       <div style="padding: 2rem; text-align: center; color: var(--text-muted); font-size: 0.9rem;">
         Topology diagram available upon script configuration.
@@ -346,45 +515,62 @@
     const data = window.CNC_DATA;
     if (!data) return;
 
-    const mainContainer = document.getElementById('mainContent');
+    const mainContainer = document.getElementById("mainContent");
     if (!mainContainer) return;
 
     // Check if view is setup guide
-    if (currentProgramId === 'setup') {
+    if (currentProgramId === "setup") {
       renderSetupGuide(mainContainer, data.setup);
       updateNavActive();
       return;
     }
 
     // Check if view is trace guide
-    if (currentProgramId === 'trace-guide') {
+    if (currentProgramId === "trace-guide") {
       renderTraceGuide(mainContainer, data.traceGuide);
       updateNavActive();
       return;
     }
 
     // Otherwise render standard lab program view
-    const prog = data.programs.find(p => p.id === currentProgramId) || data.programs[0];
+    const prog =
+      data.programs.find(
+        (p) =>
+          p.id === currentProgramId ||
+          p.shortId === currentProgramId ||
+          "partA-" + currentProgramId === p.id ||
+          "partB-" + currentProgramId === p.id,
+      ) || data.programs[0];
+
     const activeFile = prog.files[activeFileIndex] || prog.files[0];
 
     // Compute line count and highlighted HTML
-    const rawLines = activeFile.content.split('\n');
+    const rawLines = activeFile.content.split("\n");
     const lineCount = rawLines.length;
     const highlightedHtml = highlightCode(activeFile.content, activeFile.lang);
 
     // Build Line Numbers HTML
-    let lineNumsHtml = '';
+    let lineNumsHtml = "";
     for (let l = 1; l <= lineCount; l++) {
       lineNumsHtml += `<span class="line-number">${l}</span>`;
     }
 
     // Build Tabs HTML
-    let tabsHtml = '';
+    let tabsHtml = "";
     prog.files.forEach((f, idx) => {
       const isActive = idx === activeFileIndex;
-      const icon = f.lang === 'tcl' ? '⚡' : f.lang === 'awk' ? '📊' : '📄';
+      const icon =
+        f.lang === "tcl"
+          ? "⚡"
+          : f.lang === "awk"
+            ? "📊"
+            : f.lang === "python"
+              ? "🐍"
+              : f.lang === "bash"
+                ? "🐚"
+                : "📄";
       tabsHtml += `
-        <button class="code-tab-btn ${isActive ? 'active' : ''}" data-file-idx="${idx}">
+        <button class="code-tab-btn ${isActive ? "active" : ""}" data-file-idx="${idx}">
           <span class="file-icon">${icon}</span>
           <span>${f.name}</span>
         </button>
@@ -392,9 +578,9 @@
     });
 
     // Build Execution Commands HTML
-    let commandsHtml = '';
+    let commandsHtml = "";
     if (prog.execution && prog.execution.commands) {
-      prog.execution.commands.forEach(c => {
+      prog.execution.commands.forEach((c) => {
         commandsHtml += `
           <div class="command-item">
             <div class="command-chip" data-copy="${escapeHtml(c.cmd)}" title="Click to copy command">
@@ -407,43 +593,10 @@
       });
     }
 
-    // Build View HTML
-    mainContainer.innerHTML = `
-      <div class="breadcrumbs">
-        <span>CNC Laboratory</span>
-        <span class="breadcrumb-sep">/</span>
-        <span>${escapeHtml(prog.part)}</span>
-        <span class="breadcrumb-sep">/</span>
-        <span style="color: var(--text-primary); font-weight: 600;">${escapeHtml(prog.num)}</span>
-      </div>
-
-      <header class="view-header">
-        <div class="view-badge-row">
-          <span class="pill-badge">${escapeHtml(prog.num)}</span>
-          <span class="pill-badge blue">${escapeHtml(prog.badge)}</span>
-        </div>
-        <h2 class="view-title">${escapeHtml(prog.title)}</h2>
-        <p class="view-summary">${escapeHtml(prog.summary)}</p>
-      </header>
-
-      <!-- CRUCIAL USER REQUIREMENT: README inside each p[number] turned into Question -->
-      <section class="question-card" aria-label="Problem Statement">
-        <div class="question-header">
-          <div class="question-label">
-            <span style="font-size: 1rem;">🎯</span>
-            <span>Problem Statement / Question</span>
-          </div>
-          <button class="question-copy-btn" id="copyQuestionBtn">
-            <span>📋</span>
-            <span>Copy Question</span>
-          </button>
-        </div>
-        <div class="question-body">
-          <p>${escapeHtml(prog.question)}</p>
-        </div>
-      </section>
-
-      <!-- TOPOLOGY VISUALIZER -->
+    // Topology section HTML (rendered ONLY if program has topology)
+    let topologySectionHtml = "";
+    if (prog.hasTopology && prog.topology) {
+      topologySectionHtml = `
       <section class="topology-card">
         <div class="topology-header">
           <div class="topology-title">
@@ -455,7 +608,7 @@
           </span>
         </div>
         <div class="topology-svg-container">
-          ${renderTopologySvg(prog.id)}
+          ${renderTopologySvg(prog.shortId || prog.id)}
         </div>
         <div class="topology-legend">
           <div class="legend-item">
@@ -475,6 +628,47 @@
           </div>
         </div>
       </section>
+      `;
+    }
+
+    // Build View HTML
+    mainContainer.innerHTML = `
+      <div class="breadcrumbs">
+        <span>CNC Laboratory</span>
+        <span class="breadcrumb-sep">/</span>
+        <span>${escapeHtml(prog.part)}</span>
+        <span class="breadcrumb-sep">/</span>
+        <span style="color: var(--text-primary); font-weight: 600;">${escapeHtml(prog.num)}</span>
+      </div>
+
+      <header class="view-header">
+        <div class="view-badge-row">
+          <span class="pill-badge">${escapeHtml(prog.num)}</span>
+          <span class="pill-badge ${prog.category === "partB" ? "emerald" : "blue"}">${escapeHtml(prog.badge)}</span>
+        </div>
+        <h2 class="view-title">${escapeHtml(prog.title)}</h2>
+        <p class="view-summary">${escapeHtml(prog.summary)}</p>
+      </header>
+
+      <!-- CRUCIAL USER REQUIREMENT: README inside each p[number] turned into Question -->
+      <section class="question-card" aria-label="Problem Statement" ${prog.category === "partB" ? 'style="border-left-color: var(--accent-emerald);"' : ""}>
+        <div class="question-header">
+          <div class="question-label" ${prog.category === "partB" ? 'style="color: var(--accent-emerald);"' : ""}>
+            <span style="font-size: 1rem;">🎯</span>
+            <span>Problem Statement / Question</span>
+          </div>
+          <button class="question-copy-btn" id="copyQuestionBtn">
+            <span>📋</span>
+            <span>Copy Question</span>
+          </button>
+        </div>
+        <div class="question-body">
+          <p>${escapeHtml(prog.question)}</p>
+        </div>
+      </section>
+
+      <!-- TOPOLOGY VISUALIZER (Only if program has topology) -->
+      ${topologySectionHtml}
 
       <!-- CODE VIEWER WITH SYNTAX HIGHLIGHTING -->
       <section class="code-viewer-card">
@@ -510,12 +704,14 @@
         <div class="info-card">
           <h3 class="info-card-title">
             <span>⚙️</span>
-            <span>Simulation Execution Steps</span>
+            <span>${prog.category === "partB" ? "Execution Steps" : "Simulation Execution Steps"}</span>
           </h3>
           <div class="command-list">
             ${commandsHtml}
           </div>
-          ${prog.execution.tip ? `
+          ${
+            prog.execution.tip
+              ? `
             <div class="callout-box">
               <span class="callout-icon">💡</span>
               <div>
@@ -523,7 +719,9 @@
                 ${escapeHtml(prog.execution.tip)}
               </div>
             </div>
-          ` : ''}
+          `
+              : ""
+          }
         </div>
 
         <div class="info-card">
@@ -531,9 +729,7 @@
             <span>🖥️</span>
             <span>Expected Console Output</span>
           </h3>
-          <div class="terminal-box">madvith@archlinux:~/cnc/${escapeHtml(prog.id)}$ ns main.tcl
-madvith@archlinux:~/cnc/${escapeHtml(prog.id)}$ awk -f main.awk out.tr
-${escapeHtml(prog.execution.expected)}</div>
+          <div class="terminal-box">${escapeHtml(prog.execution.expected)}</div>
         </div>
       </section>
     `;
@@ -550,17 +746,17 @@ ${escapeHtml(prog.execution.expected)}</div>
   function renderSetupGuide(container, setup) {
     const activeFile = setup.files[activeFileIndex] || setup.files[0];
     const highlightedHtml = highlightCode(activeFile.content, activeFile.lang);
-    const lineCount = activeFile.content.split('\n').length;
+    const lineCount = activeFile.content.split("\n").length;
 
-    let lineNumsHtml = '';
+    let lineNumsHtml = "";
     for (let l = 1; l <= lineCount; l++) {
       lineNumsHtml += `<span class="line-number">${l}</span>`;
     }
 
-    let tabsHtml = '';
+    let tabsHtml = "";
     setup.files.forEach((f, idx) => {
       tabsHtml += `
-        <button class="code-tab-btn ${idx === activeFileIndex ? 'active' : ''}" data-file-idx="${idx}">
+        <button class="code-tab-btn ${idx === activeFileIndex ? "active" : ""}" data-file-idx="${idx}">
           <span class="file-icon">📜</span>
           <span>${f.name}</span>
         </button>
@@ -626,8 +822,8 @@ ${escapeHtml(prog.execution.expected)}</div>
   }
 
   function renderTraceGuide(container, guide) {
-    let rowsHtml = '';
-    guide.fields.forEach(f => {
+    let rowsHtml = "";
+    guide.fields.forEach((f) => {
       rowsHtml += `
         <tr>
           <td><span class="trace-col-badge">${f.col}</span></td>
@@ -696,43 +892,46 @@ ${escapeHtml(prog.execution.expected)}</div>
 
   function attachViewEvents(prog, activeFile) {
     // Tab switching
-    document.querySelectorAll('.code-tab-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        activeFileIndex = parseInt(btn.getAttribute('data-file-idx'), 10);
+    document.querySelectorAll(".code-tab-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        activeFileIndex = parseInt(btn.getAttribute("data-file-idx"), 10);
         renderView();
       });
     });
 
     // Copy Question
-    const copyQBtn = document.getElementById('copyQuestionBtn');
+    const copyQBtn = document.getElementById("copyQuestionBtn");
     if (copyQBtn && prog.question) {
-      copyQBtn.addEventListener('click', () => {
-        copyToClipboard(prog.question, 'Problem statement copied!');
+      copyQBtn.addEventListener("click", () => {
+        copyToClipboard(prog.question, "Problem statement copied!");
       });
     }
 
     // Copy Code
-    const copyCBtn = document.getElementById('copyCodeBtn');
+    const copyCBtn = document.getElementById("copyCodeBtn");
     if (copyCBtn && activeFile) {
-      copyCBtn.addEventListener('click', () => {
-        copyToClipboard(activeFile.content, `${activeFile.name} copied to clipboard!`);
+      copyCBtn.addEventListener("click", () => {
+        copyToClipboard(
+          activeFile.content,
+          `${activeFile.name} copied to clipboard!`,
+        );
       });
     }
 
     // Download File
-    const downloadBtn = document.getElementById('downloadCodeBtn');
+    const downloadBtn = document.getElementById("downloadCodeBtn");
     if (downloadBtn && activeFile) {
-      downloadBtn.addEventListener('click', () => {
+      downloadBtn.addEventListener("click", () => {
         downloadFile(activeFile.name, activeFile.content);
       });
     }
 
     // Copy Command Chips
-    document.querySelectorAll('.command-chip').forEach(chip => {
-      chip.addEventListener('click', () => {
-        const cmd = chip.getAttribute('data-copy');
+    document.querySelectorAll(".command-chip").forEach((chip) => {
+      chip.addEventListener("click", () => {
+        const cmd = chip.getAttribute("data-copy");
         if (cmd) {
-          copyToClipboard(cmd, 'Command copied!');
+          copyToClipboard(cmd, "Command copied!");
         }
       });
     });
@@ -740,36 +939,39 @@ ${escapeHtml(prog.execution.expected)}</div>
 
   function copyToClipboard(text, message) {
     if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(() => {
-        showToast(message || 'Copied to clipboard!');
-      }).catch(() => {
-        fallbackCopy(text, message);
-      });
+      navigator.clipboard
+        .writeText(text)
+        .then(() => {
+          showToast(message || "Copied to clipboard!");
+        })
+        .catch(() => {
+          fallbackCopy(text, message);
+        });
     } else {
       fallbackCopy(text, message);
     }
   }
 
   function fallbackCopy(text, message) {
-    const ta = document.createElement('textarea');
+    const ta = document.createElement("textarea");
     ta.value = text;
-    ta.style.position = 'fixed';
-    ta.style.opacity = '0';
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
     document.body.appendChild(ta);
     ta.select();
     try {
-      document.execCommand('copy');
-      showToast(message || 'Copied to clipboard!');
+      document.execCommand("copy");
+      showToast(message || "Copied to clipboard!");
     } catch (e) {
-      showToast('Could not copy automatically');
+      showToast("Could not copy automatically");
     }
     document.body.removeChild(ta);
   }
 
   function downloadFile(filename, content) {
-    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
     a.download = filename;
     document.body.appendChild(a);
@@ -780,30 +982,88 @@ ${escapeHtml(prog.execution.expected)}</div>
   }
 
   function showToast(msg) {
-    let toast = document.getElementById('toastNotice');
+    let toast = document.getElementById("toastNotice");
     if (!toast) {
-      toast = document.createElement('div');
-      toast.id = 'toastNotice';
-      toast.className = 'toast-notice';
+      toast = document.createElement("div");
+      toast.id = "toastNotice";
+      toast.className = "toast-notice";
       document.body.appendChild(toast);
     }
     toast.innerHTML = `<span class="toast-icon">✓</span><span>${escapeHtml(msg)}</span>`;
-    toast.classList.add('show');
+    toast.classList.add("show");
     clearTimeout(window._toastTimeout);
     window._toastTimeout = setTimeout(() => {
-      toast.classList.remove('show');
+      toast.classList.remove("show");
     }, 2400);
   }
 
   function updateNavActive() {
-    document.querySelectorAll('.nav-item-btn').forEach(btn => {
-      const id = btn.getAttribute('data-id');
-      if (id === currentProgramId) {
-        btn.classList.add('active');
-      } else {
-        btn.classList.remove('active');
-      }
+    document.querySelectorAll(".nav-item-btn").forEach((btn) => {
+      const id = btn.getAttribute("data-id");
+      const matches =
+        id === currentProgramId ||
+        // short-form 'p1' → matches 'partA-p1' nav buttons
+        id === "partA-" + currentProgramId ||
+        // short-form 'b-p1' → matches 'partB-p1' nav buttons
+        id === "partB-" + currentProgramId.replace(/^b-/, "");
+      btn.classList.toggle("active", matches);
     });
+  }
+
+  function renderSidebarNav() {
+    const data = window.CNC_DATA;
+    if (!data || !data.programs) return;
+
+    const partAList = document.getElementById("partANavList");
+    const partBList = document.getElementById("partBNavList");
+
+    if (partAList) {
+      let aHtml = "";
+      data.programs
+        .filter((p) => p.category === "partA")
+        .forEach((p) => {
+          const isAct =
+            p.id === currentProgramId || p.shortId === currentProgramId;
+          const badge = p.shortId
+            ? p.shortId.toUpperCase()
+            : p.num.replace("Program ", "P");
+          aHtml += `
+          <li>
+            <button class="nav-item-btn ${isAct ? "active" : ""}" data-id="${escapeHtml(p.id)}">
+              <div class="nav-item-left">
+                <span class="nav-badge">${escapeHtml(badge)}</span>
+                <span>${escapeHtml(p.title.split("&")[0].split("•")[0].trim())}</span>
+              </div>
+              <span style="font-size: 0.72rem; color: var(--text-muted);">${p.files.length} files</span>
+            </button>
+          </li>
+        `;
+        });
+      partAList.innerHTML = aHtml;
+    }
+
+    if (partBList) {
+      let bHtml = "";
+      data.programs
+        .filter((p) => p.category === "partB")
+        .forEach((p) => {
+          const isAct =
+            p.id === currentProgramId || p.shortId === currentProgramId;
+          const badge = p.num.replace("Program ", "P");
+          bHtml += `
+          <li>
+            <button class="nav-item-btn ${isAct ? "active" : ""}" data-id="${escapeHtml(p.id)}">
+              <div class="nav-item-left">
+                <span class="nav-badge" style="color: #10b981; border-color: rgba(16, 185, 129, 0.3);">${escapeHtml(badge)}</span>
+                <span>${escapeHtml(p.title.split("&")[0].split("•")[0].split(":")[0].trim())}</span>
+              </div>
+              <span style="font-size: 0.72rem; color: var(--text-muted);">${p.files.length} py</span>
+            </button>
+          </li>
+        `;
+        });
+      partBList.innerHTML = bHtml;
+    }
   }
 
   /* ===================================================================
@@ -811,46 +1071,50 @@ ${escapeHtml(prog.execution.expected)}</div>
      =================================================================== */
 
   function initApp() {
-    // Navigation Clicks
-    document.querySelectorAll('.nav-item-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const id = btn.getAttribute('data-id');
-        if (id) {
-          currentProgramId = id;
-          activeFileIndex = 0;
-          location.hash = id;
-          renderView();
-          window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Dynamic sidebar generation from data catalog
+    renderSidebarNav();
 
-          // Close mobile menu if open
-          document.querySelector('.app-sidebar')?.classList.remove('open');
-        }
-      });
+    // Navigation Clicks (delegated to support dynamically rendered items)
+    document.querySelector(".app-sidebar")?.addEventListener("click", (e) => {
+      const btn = e.target.closest(".nav-item-btn");
+      if (!btn) return;
+      const id = btn.getAttribute("data-id");
+      if (id) {
+        currentProgramId = id;
+        activeFileIndex = 0;
+        location.hash = id;
+        renderView();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+
+        // Close mobile menu if open
+        document.querySelector(".app-sidebar")?.classList.remove("open");
+      }
     });
 
     // Theme Toggle
-    const themeBtn = document.getElementById('themeToggleBtn');
+    const themeBtn = document.getElementById("themeToggleBtn");
     if (themeBtn) {
-      themeBtn.addEventListener('click', () => {
-        activeTheme = activeTheme === 'dark' ? 'light' : 'dark';
-        document.documentElement.setAttribute('data-theme', activeTheme);
-        localStorage.setItem('cnc_theme', activeTheme);
-        themeBtn.querySelector('.theme-text').textContent = activeTheme === 'dark' ? 'Light' : 'Dark';
+      themeBtn.addEventListener("click", () => {
+        activeTheme = activeTheme === "dark" ? "light" : "dark";
+        document.documentElement.setAttribute("data-theme", activeTheme);
+        localStorage.setItem("cnc_theme", activeTheme);
+        themeBtn.querySelector(".theme-text").textContent =
+          activeTheme === "dark" ? "Light" : "Dark";
       });
     }
 
     // Mobile Menu Toggle
-    const mobileBtn = document.getElementById('mobileMenuBtn');
+    const mobileBtn = document.getElementById("mobileMenuBtn");
     if (mobileBtn) {
-      mobileBtn.addEventListener('click', () => {
-        document.querySelector('.app-sidebar')?.classList.toggle('open');
+      mobileBtn.addEventListener("click", () => {
+        document.querySelector(".app-sidebar")?.classList.toggle("open");
       });
     }
 
     // Global Search
-    const searchInput = document.getElementById('globalSearch');
+    const searchInput = document.getElementById("globalSearch");
     if (searchInput) {
-      searchInput.addEventListener('input', (e) => {
+      searchInput.addEventListener("input", (e) => {
         const query = e.target.value.toLowerCase().trim();
         if (!query) return;
 
@@ -858,10 +1122,11 @@ ${escapeHtml(prog.execution.expected)}</div>
         const data = window.CNC_DATA;
         if (!data) return;
 
-        const match = data.programs.find(p =>
-          p.title.toLowerCase().includes(query) ||
-          p.question.toLowerCase().includes(query) ||
-          p.files.some(f => f.content.toLowerCase().includes(query))
+        const match = data.programs.find(
+          (p) =>
+            p.title.toLowerCase().includes(query) ||
+            p.question.toLowerCase().includes(query) ||
+            p.files.some((f) => f.content.toLowerCase().includes(query)),
         );
 
         if (match && match.id !== currentProgramId) {
@@ -873,24 +1138,50 @@ ${escapeHtml(prog.execution.expected)}</div>
     }
 
     // Keyboard Shortcuts
-    document.addEventListener('keydown', (e) => {
+    document.addEventListener("keydown", (e) => {
       // Focus search on '/'
-      if (e.key === '/' && document.activeElement !== searchInput) {
+      if (e.key === "/" && document.activeElement !== searchInput) {
         e.preventDefault();
         searchInput?.focus();
       }
-      // Jump to p1, p2, p3 on numbers 1, 2, 3
-      if (!['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) {
-        if (e.key === '1') { currentProgramId = 'p1'; activeFileIndex = 0; renderView(); }
-        if (e.key === '2') { currentProgramId = 'p2'; activeFileIndex = 0; renderView(); }
-        if (e.key === '3') { currentProgramId = 'p3'; activeFileIndex = 0; renderView(); }
-        if (e.key === 't' || e.key === 'T') { themeBtn?.click(); }
+      // Jump to p1, p2, p3, p4 on numbers 1, 2, 3, 4
+      if (!["INPUT", "TEXTAREA"].includes(document.activeElement?.tagName)) {
+        if (e.key === "1") {
+          currentProgramId = "p1";
+          activeFileIndex = 0;
+          renderView();
+        }
+        if (e.key === "2") {
+          currentProgramId = "p2";
+          activeFileIndex = 0;
+          renderView();
+        }
+        if (e.key === "3") {
+          currentProgramId = "p3";
+          activeFileIndex = 0;
+          renderView();
+        }
+        if (e.key === "4") {
+          currentProgramId = "p4";
+          activeFileIndex = 0;
+          renderView();
+        }
+        if (e.key === "t" || e.key === "T") {
+          themeBtn?.click();
+        }
       }
     });
 
     // Check Hash on Load
-    const hash = window.location.hash.replace('#', '');
-    if (hash && (hash.startsWith('p') || hash === 'setup' || hash === 'trace-guide')) {
+    const hash = window.location.hash.replace("#", "");
+    if (
+      hash &&
+      (hash.startsWith("p") ||
+        hash.startsWith("part") ||
+        hash.startsWith("b-") ||
+        hash === "setup" ||
+        hash === "trace-guide")
+    ) {
       currentProgramId = hash;
     }
 
@@ -899,11 +1190,9 @@ ${escapeHtml(prog.execution.expected)}</div>
   }
 
   // Run on DOM ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initApp);
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initApp);
   } else {
     initApp();
   }
-
 })();
-
