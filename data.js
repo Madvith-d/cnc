@@ -314,10 +314,10 @@ window.CNC_DATA = {
       "part": "Part B",
       "category": "partB",
       "num": "Program 1",
-      "title": "HDLC Frame Implementation (Bit & Character Stuffing)",
-      "badge": "Part B \u2022 Python \u2022 1 file",
+      "title": "Bit Stuffing & Destuffing (Data Link Layer)",
+      "badge": "Data Link \u2022 Framing \u2022 Python",
       "question": "Program to implement Bit Stuffing or Byte Stuffing concept in data link layer",
-      "summary": "Part B Network Program 1 implemented in Python.",
+      "summary": "Implements bit stuffing and destuffing. Inserts a 0 bit after every five consecutive 1 bits at the transmitter to prevent unintended flag sequences, and strips the stuffed 0 bits at the receiver.",
       "hasTopology": false,
       "topology": null,
       "files": [
@@ -325,7 +325,7 @@ window.CNC_DATA = {
           "name": "main.py",
           "lang": "python",
           "path": "partB/p1/main.py",
-          "description": "Python source: main.py",
+          "description": "Source file: main.py",
           "content": "# Experiment 5: Bit Stuffing and Destuffing\n# Concept: Insert a '0' after five consecutive '1's at the transmitter,\n# and remove that '0' at the receiver to maintain frame delineation.\n\ndef bit_stuffing(data):\n    stuffed_data = \"\"\n    count = 0\n    for bit in data:\n        stuffed_data += bit\n        if bit == '1':\n            count += 1\n            if count == 5:\n                stuffed_data += '0'\n                count = 0\n        else:\n            count = 0\n    return stuffed_data\n\n\ndef bit_destuffing(stuffed_data):\n    destuffed_data = \"\"\n    count = 0\n    skip_next = False\n    for bit in stuffed_data:\n        if skip_next:\n            skip_next = False\n            continue\n        destuffed_data += bit\n        if bit == '1':\n            count += 1\n            if count == 5:\n                skip_next = True\n                count = 0\n        else:\n            count = 0\n    return destuffed_data\n\n\n\ndata = input(\"Enter the input data :\")\nprint(\"Original data :\", data)\nstuffed = bit_stuffing(data)\nprint(\"Bit Stuffed data :\", stuffed)\ndestuffed = bit_destuffing(stuffed)\nprint(\"Bit Destuffed data :\", destuffed)"
         }
       ],
@@ -333,10 +333,10 @@ window.CNC_DATA = {
         "commands": [
           {
             "cmd": "python3 main.py",
-            "desc": "Execute the Python script main.py."
+            "desc": "Execute the interactive bit stuffing and destuffing simulation."
           }
         ],
-        "expected": "madvith@archlinux:~/cnc/partB/p1$ python3 main.py\nProgram 1 executed successfully."
+        "expected": "madvith@archlinux:~/cnc/partB/p1$ python3 main.py\nEnter the input data : 11111101\nOriginal data : 11111101\nBit Stuffed data : 111110101\nBit Destuffed data : 11111101"
       }
     },
     {
@@ -345,10 +345,10 @@ window.CNC_DATA = {
       "part": "Part B",
       "category": "partB",
       "num": "Program 2",
-      "title": "Distance Vector Routing Algorithm (Bellman-Ford)",
-      "badge": "Part B \u2022 Python \u2022 1 file",
+      "title": "16-Bit CRC-CCITT Error Detecting Code",
+      "badge": "Error Detection \u2022 CRC-CCITT \u2022 Python",
       "question": "Write a program for error detecting code using CRC-CCITT (16-bits).",
-      "summary": "Part B Network Program 2 implemented in Python.",
+      "summary": "Implements 16-bit CRC error detection using the standard CRC-CCITT polynomial (x^16 + x^12 + x^5 + 1). Computes transmitted codeword, allows simulated bit corruption, and checks syndrome validity at receiver.",
       "hasTopology": false,
       "topology": null,
       "files": [
@@ -356,7 +356,7 @@ window.CNC_DATA = {
           "name": "main.py",
           "lang": "python",
           "path": "partB/p2/main.py",
-          "description": "Python source: main.py",
+          "description": "Source file: main.py",
           "content": "div = [1,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,1]\nm = len(div)\nn = int(input(\"Enter no of bits\"))\n\nprint(\"Enter the bits : \\n\")\nif n < m :\n    print(\"Invalid\")\n    exit()\ndata = []\nfor i in range(n) :\n    bit = int(input())\n    if bit not in [0 , 1]:\n        print(\"Invalid bit\")\n        exit()\n    else:\n        data.append(bit)\n\n\ncdata = data.copy() \nfor i in range(m - 1):\n    cdata.append(0)\nprint(\"Initial codeword : \", cdata)\n\nfor i in range(n):\n    if cdata[i] == 1 :\n        for j in range(m):\n            cdata[i+j]^=div[j]\nprint(cdata)\n\nfor i in range(n,n+m-1):\n    data.append(cdata[i])\n\nprint(\"Transmitted codeword :\" , data)\n\nchoice = 0\nprint(\"Choose : \\n1.Introduce Error \\n2.No error\")\nchoice = int(input())\nif choice == 1 :\n    p = int(input(\"Enter the position to indroduce error : \"))\n    if 1 <= p <= len(data):\n        data[p-1]^=1\n    else:\n        print(\"Invalid Position\")\nprint(\"Received message : \", data)\nreceived = data.copy()\nfor i in range(n) :\n        if data[i] == 1:\n            for j in range(m):\n                data[i+j]^=div[j]\n\nflag = True\n\nfor i in data:\n    if i == 1 :\n        flag=False\n        break\nif flag :\n    print(\"Valid data\")\n    print(\"Data bits : \")\n    print(received[0:n])\n   \nelse:\n     print(\"Invalid data\")\n   \n\n"
         }
       ],
@@ -364,10 +364,10 @@ window.CNC_DATA = {
         "commands": [
           {
             "cmd": "python3 main.py",
-            "desc": "Execute the Python script main.py."
+            "desc": "Run the CRC calculation and interactive error detection test."
           }
         ],
-        "expected": "madvith@archlinux:~/cnc/partB/p2$ python3 main.py\nProgram 2 executed successfully."
+        "expected": "madvith@archlinux:~/cnc/partB/p2$ python3 main.py\nEnter no of bits: 17\nEnter the bits : \n[Input 17 binary bits]\nInitial codeword : [1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, ...]\nTransmitted codeword : [1, 0, 0, ...]\nChoose : \n1.Introduce Error \n2.No error\n2\nReceived message : [1, 0, ...]\nValid data\nData bits : \n[1, 0, ...]"
       }
     },
     {
@@ -376,10 +376,10 @@ window.CNC_DATA = {
       "part": "Part B",
       "category": "partB",
       "num": "Program 3",
-      "title": "Dijkstra Shortest Path Routing Algorithm",
-      "badge": "Part B \u2022 Python \u2022 1 file",
+      "title": "Frame Sorting Technique for Network Buffers",
+      "badge": "Buffer Management \u2022 Sequencing \u2022 Python",
       "question": "Write a program for frame sorting technique used in buffers.",
-      "summary": "Part B Network Program 3 implemented in Python.",
+      "summary": "Simulates frame fragmentation into chunks with sequence numbers, models out-of-order network arrival by shuffling, and reassembles the original stream using buffer bubble sort.",
       "hasTopology": false,
       "topology": null,
       "files": [
@@ -387,7 +387,7 @@ window.CNC_DATA = {
           "name": "main.py",
           "lang": "python",
           "path": "partB/p3/main.py",
-          "description": "Python source: main.py",
+          "description": "Source file: main.py",
           "content": "# Experiment 7: Frame Sorting Technique Used in Buffers\n# Concept: Packets in packet-switched networks traverse diverse paths and may arrive\n# out of order. Receiver buffers use sequence numbers to sort and reassemble data.\n\nimport random\n\nDATA_SZ = 3\n\n\ndef bubb_sort(arr):\n    n = len(arr)\n    for i in range(n):\n        for j in range(n - i - 1):\n            if arr[j] > arr[j + 1]:\n                arr[j], arr[j + 1] = arr[j + 1], arr[j]\n\n\nif __name__ == \"__main__\":\n    msg = input(\"Enter the message:\")\n    # Fragment message into chunks of DATA_SZ characters\n    msg_chunks = [msg[i:i + DATA_SZ] for i in range(0, len(msg), DATA_SZ)]\n\n    # Assign sequential frame sequence numbers starting from 1\n    frames = list(enumerate(msg_chunks, start=1))\n    print(\"Fragmented frames:\", frames)\n\n    # Simulate out-of-order network arrival by shuffling\n    for i in range(len(frames)):\n        j = random.randint(0, len(frames) - 1)\n        frames[i], frames[j] = frames[j], frames[i]\n    print(\"Shuffled frames:\", frames)\n\n    # Sort frames in receiver buffer by sequence number\n    bubb_sort(frames)\n    print(\"Sorted frames:\", frames)\n\n    # Reassemble original stream\n    print(\"Sorted message:\" + \"\".join(x[1] for x in frames))"
         }
       ],
@@ -395,10 +395,10 @@ window.CNC_DATA = {
         "commands": [
           {
             "cmd": "python3 main.py",
-            "desc": "Execute the Python script main.py."
+            "desc": "Run the frame fragmentation, shuffle, and buffer reassembly demo."
           }
         ],
-        "expected": "madvith@archlinux:~/cnc/partB/p3$ python3 main.py\nProgram 3 executed successfully."
+        "expected": "madvith@archlinux:~/cnc/partB/p3$ python3 main.py\nEnter the message: COMPUTERNETWORKS\nFragmented frames: [(1, 'COM'), (2, 'PUT'), (3, 'ERN'), (4, 'ETW'), (5, 'ORK'), (6, 'S')]\nShuffled frames: [(4, 'ETW'), (1, 'COM'), (6, 'S'), (2, 'PUT'), (5, 'ORK'), (3, 'ERN')]\nSorted frames: [(1, 'COM'), (2, 'PUT'), (3, 'ERN'), (4, 'ETW'), (5, 'ORK'), (6, 'S')]\nSorted message: COMPUTERNETWORKS"
       }
     },
     {
@@ -407,10 +407,10 @@ window.CNC_DATA = {
       "part": "Part B",
       "category": "partB",
       "num": "Program 4",
-      "title": "Cyclic Redundancy Check (CRC-CCITT) Error Detection",
-      "badge": "Part B \u2022 Python \u2022 1 file",
+      "title": "Distance Vector Routing Algorithm (Bellman-Ford)",
+      "badge": "Network Layer \u2022 Bellman-Ford \u2022 C",
       "question": "Write a program for distance vector algorithm to find suitable path for transmission.",
-      "summary": "Part B Network Program 4 implemented in Python.",
+      "summary": "Implements the Distance Vector Routing algorithm in C using the Bellman-Ford equation: D_x(y) = min_v { c(x,v) + D_v(y) }. Computes routing tables and optimal next-hops across routers.",
       "hasTopology": false,
       "topology": null,
       "files": [
@@ -418,18 +418,22 @@ window.CNC_DATA = {
           "name": "main.c",
           "lang": "c",
           "path": "partB/p4/main.c",
-          "description": "Python source: main.c",
+          "description": "Source file: main.c",
           "content": "#include <stdio.h>\n\nstruct node {\n  int dist[20];\n  int from[20];\n} rt[10];\n\nint main() {\n  int dmat[20][20];\n  int n, i, j, k, count = 1;\n\n  printf(\"\\nEnter the number of nodes:\\n\");\n  scanf(\"%d\", &n);\n\n  printf(\"\\nEnter the cost matrix:\\n\");\n\n  for (i = 1; i <= n; i++) {\n    for (j = 1; j <= n; j++) {\n      scanf(\"%d\", &dmat[i][j]);\n\n      if (i == j)\n        dmat[i][j] = 0;\n\n      rt[i].dist[j] = dmat[i][j];\n      rt[i].from[j] = j;\n    }\n  }\n\n  do {\n    count = 0;\n\n    for (i = 1; i <= n; i++) {\n      for (j = 1; j <= n; j++) {\n        for (k = 1; k <= n; k++) {\n          if (rt[i].dist[j] > rt[i].dist[k] + rt[k].dist[j]) {\n            rt[i].dist[j] = rt[i].dist[k] + rt[k].dist[j];\n            rt[i].from[j] = k;\n            count = 1;\n          }\n        }\n      }\n    }\n\n  } while (count != 0);\n\n  for (i = 1; i <= n; i++) {\n    printf(\"\\nDistance Table for router %c is:\\n\", i + 64);\n\n    for (j = 1; j <= n; j++) {\n      printf(\"\\tNode %d Via %d, Distance: %d\\n\", j, rt[i].from[j],\n             rt[i].dist[j]);\n    }\n  }\n\n  return 0;\n}"
         }
       ],
       "execution": {
         "commands": [
           {
-            "cmd": "python3 main.c",
-            "desc": "Execute the Python script main.c."
+            "cmd": "gcc main.c -o dist_vector",
+            "desc": "Compile the Distance Vector routing C source."
+          },
+          {
+            "cmd": "./dist_vector",
+            "desc": "Run the router distance table calculator."
           }
         ],
-        "expected": "madvith@archlinux:~/cnc/partB/p4$ python3 main.c\nProgram 4 executed successfully."
+        "expected": "madvith@archlinux:~/cnc/partB/p4$ gcc main.c -o dist_vector && ./dist_vector\nEnter the number of nodes:\n3\nEnter the cost matrix:\n0 2 7\n2 0 1\n7 1 0\n\nDistance Table for router A is:\n\tNode 1 Via 1, Distance: 0\n\tNode 2 Via 2, Distance: 2\n\tNode 3 Via 2, Distance: 3\n\nDistance Table for router B is:\n\tNode 1 Via 1, Distance: 2\n\tNode 2 Via 2, Distance: 0\n\tNode 3 Via 3, Distance: 1\n\nDistance Table for router C is:\n\tNode 1 Via 2, Distance: 3\n\tNode 2 Via 2, Distance: 1\n\tNode 3 Via 3, Distance: 0"
       }
     },
     {
@@ -438,32 +442,25 @@ window.CNC_DATA = {
       "part": "Part B",
       "category": "partB",
       "num": "Program 5",
-      "title": "Sliding Window / Socket Client-Server Protocol",
-      "badge": "Part B \u2022 Python \u2022 3 files",
-      "question": "Write a Python program to implement Sliding Window / Socket Client-Server Protocol.",
-      "summary": "Part B Network Program 5 implemented in Python.",
+      "title": "TCP Client-Server File Transfer Protocol",
+      "badge": "Sockets \u2022 TCP / IP \u2022 Python",
+      "question": "Using TCP/IP sockets, write a client-server program to make client sending the file name and the server to send back the contents of the requested file if present.",
+      "summary": "Implements a client-server file transfer service using TCP sockets. The client sends the requested filename; the listening server reads the file from disk and streams bytes back to be saved locally.",
       "hasTopology": false,
       "topology": null,
       "files": [
         {
-          "name": "REAME.md",
-          "lang": "markdown",
-          "path": "partB/p5/REAME.md",
-          "description": "Python source: REAME.md",
-          "content": "Using TCP/IP sockets, write a client-server program to make client sending the file name and the server to send back the contents of the requested file if present.\n"
-        },
-        {
           "name": "client.py",
           "lang": "python",
           "path": "partB/p5/client.py",
-          "description": "Python source: client.py",
+          "description": "Source file: client.py",
           "content": "# tcp_client.py - requests a file from the server and saves it\nimport socket\nimport sys\nimport os\n\nSERVER_ADDRESS = (\"127.0.0.1\", 8888)  # (IP address, port) of the server\nBUFFER_SIZE = 1024\n\n# create a TCP socket and connect to the server\nclient_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)\ntry:\n    client_socket.connect(SERVER_ADDRESS)\nexcept ConnectionRefusedError:\n    sys.exit(\"Could not connect to the server. Is tcp_server.py running?\")\n\nfile_name = input(\"Enter the file name: \").strip()\nif file_name == \"\":\n    client_socket.close()\n    sys.exit(\"No file name entered.\")\n\n# send the file name, then read until the server closes the connection\nclient_socket.sendall(file_name.encode())\nfile_contents = b\"\"\nwhile True:\n    chunk = client_socket.recv(BUFFER_SIZE)\n    if not chunk:  # empty bytes: the server has closed\n        break\n    file_contents += chunk\nclient_socket.close()\n\nif file_contents == b\"File not found\":\n    print(\"File not found on the server.\")\nelse:\n    print(\"File contents:\")\n    print(file_contents.decode(errors=\"replace\"))\n    save_name = \"received_\" + os.path.basename(file_name)\n    with open(save_name, \"wb\") as file:\n        file.write(file_contents)\n    print(\"File received and saved as '\" + save_name + \"'\")"
         },
         {
           "name": "server.py",
           "lang": "python",
           "path": "partB/p5/server.py",
-          "description": "Python source: server.py",
+          "description": "Source file: server.py",
           "content": "# tcp_server.py - sends the requested file to the client\nimport socket\nimport os\n\nHOST = \"127.0.0.1\"  # this computer only (localhost)\nPORT = 8888  # port number the server listens on\nBUFFER_SIZE = 1024  # maximum bytes received by one recv()\n\n# create a TCP socket, bind it to (HOST, PORT) and start listening\nserver_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)\nserver_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)\nserver_socket.bind((HOST, PORT))\nserver_socket.listen(1)\nprint(\"Server is listening on\", HOST, \"port\", PORT)\n\ntry:\n    while True:\n        client_socket, client_address = server_socket.accept()\n        with client_socket:\n            print(\"Accepted connection from\", client_address)\n\n            # receive the file name sent by the client\n            file_name = client_socket.recv(BUFFER_SIZE).decode()\n            print(\"Received file name =\", file_name)\n\n            # send the contents if the file exists, otherwise an error text\n            if os.path.isfile(file_name):\n                with open(file_name, \"rb\") as file:\n                    client_socket.sendall(file.read())\n                print(\"File sent\")\n            else:\n                client_socket.sendall(b\"File not found\")\n                print(\"File not found\")\nexcept KeyboardInterrupt:\n    print(\"\\nServer stopped\")\nfinally:\n    server_socket.close()"
         }
       ],
@@ -471,14 +468,14 @@ window.CNC_DATA = {
         "commands": [
           {
             "cmd": "python3 server.py",
-            "desc": "Terminal 1: Start the server listener."
+            "desc": "Terminal 1: Start the TCP server listener on 127.0.0.1:8888."
           },
           {
             "cmd": "python3 client.py",
-            "desc": "Terminal 2: Run the client application to connect."
+            "desc": "Terminal 2: Run client, request a filename, and receive file contents."
           }
         ],
-        "expected": "madvith@archlinux:~/cnc/partB/p5$ python3 server.py\n[Server listening on 127.0.0.1:8080...]\n[Connection established]\n[Data transfer verified]"
+        "expected": "[Terminal 1 - Server]\nmadvith@archlinux:~/cnc/partB/p5$ python3 server.py\nServer is listening on 127.0.0.1 port 8888\nAccepted connection from ('127.0.0.1', 52348)\nReceived file name = sample.txt\nFile sent\n\n[Terminal 2 - Client]\nmadvith@archlinux:~/cnc/partB/p5$ python3 client.py\nEnter the file name: sample.txt\nFile contents:\nHello from Computer Networks Lab!\nFile received and saved as 'received_sample.txt'"
       }
     },
     {
@@ -487,10 +484,10 @@ window.CNC_DATA = {
       "part": "Part B",
       "category": "partB",
       "num": "Program 6",
-      "title": "Congestion Control Using Leaky Bucket Algorithm",
-      "badge": "Part B \u2022 Python \u2022 2 files",
+      "title": "UDP Client-Server Calculator Service",
+      "badge": "Sockets \u2022 UDP Datagram \u2022 Python",
       "question": "Using UDP SOCKETS, write a client-server program to make the client sending two numbers and an operator, and server responding with the result. Display the result and appropriate messages for invalid inputs at the client side.",
-      "summary": "Part B Network Program 6 implemented in Python.",
+      "summary": "Implements a client-server arithmetic expression evaluator using connectionless UDP sockets. The client sends an expression (e.g. 24*5); the server evaluates it and sends back the datagram result.",
       "hasTopology": false,
       "topology": null,
       "files": [
@@ -498,14 +495,14 @@ window.CNC_DATA = {
           "name": "client.py",
           "lang": "python",
           "path": "partB/p6/client.py",
-          "description": "Python source: client.py",
+          "description": "Source file: client.py",
           "content": "import socket \n\nclientSocket = socket.socket(socket.AF_INET , socket.SOCK_DGRAM)\nexpression = input(\"Enter the expression\")\nclientSocket.sendto(expression.encode(), (\"127.0.0.1\" , 8081))\n\nresult , adress = clientSocket.recvfrom(1024)\n\nprint(f\"Result : {result.decode()}\")"
         },
         {
           "name": "server.py",
           "lang": "python",
           "path": "partB/p6/server.py",
-          "description": "Python source: server.py",
+          "description": "Source file: server.py",
           "content": "import socket\nimport re\nservSocket = socket.socket(socket.AF_INET , socket.SOCK_DGRAM)\n\nservSocket.bind((\"127.0.0.1\" , 8081))\nprint(\"UDP server started\")\nwhile True :\n    data , adress  = servSocket.recvfrom(1024)\n    expression = data.decode()\n    num1 , num2 = re.split('\\+|-|\\*|/|%' , expression)\n    num1 = float(num1)\n    num2 = float(num2)\n\n    result = 0\n    if '+' in expression :\n        result = num1 + num2\n    elif '-' in expression:\n        result = num1 - num2\n    elif '*' in expression:\n        result = num1 * num2\n    elif '/' in expression:\n        if num2 == 0:\n            result = \"Invalid\"\n        else:\n            result = num1 / num2\n    elif '%' in expression:\n        result = num1 % num2\n    else :\n        result = \"Invalid Expression\"\n    \n    print(f\"expression received from client {adress} : {expression}\")\n    print(f\"Calcultated result : {result}\")\n\n    servSocket.sendto(str(result).encode() , adress)\n\n\nservSocket.close()\n"
         }
       ],
@@ -513,14 +510,14 @@ window.CNC_DATA = {
         "commands": [
           {
             "cmd": "python3 server.py",
-            "desc": "Terminal 1: Start the server listener."
+            "desc": "Terminal 1: Start the UDP calculator server listener on port 8081."
           },
           {
             "cmd": "python3 client.py",
-            "desc": "Terminal 2: Run the client application to connect."
+            "desc": "Terminal 2: Send math expression to evaluate over UDP."
           }
         ],
-        "expected": "madvith@archlinux:~/cnc/partB/p6$ python3 server.py\n[Server listening on 127.0.0.1:8080...]\n[Connection established]\n[Data transfer verified]"
+        "expected": "[Terminal 1 - Server]\nmadvith@archlinux:~/cnc/partB/p6$ python3 server.py\nUDP server started\n\n[Terminal 2 - Client]\nmadvith@archlinux:~/cnc/partB/p6$ python3 client.py\nEnter the expression: 24*5\nResult : 120.0"
       }
     }
   ],

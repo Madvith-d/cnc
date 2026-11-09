@@ -140,14 +140,65 @@ def build_catalog():
         }
     }
 
-    # Standard Part B VTU program titles fallback
-    partB_titles = {
-        'p1': 'HDLC Frame Implementation (Bit & Character Stuffing)',
-        'p2': 'Distance Vector Routing Algorithm (Bellman-Ford)',
-        'p3': 'Dijkstra Shortest Path Routing Algorithm',
-        'p4': 'Cyclic Redundancy Check (CRC-CCITT) Error Detection',
-        'p5': 'Sliding Window / Socket Client-Server Protocol',
-        'p6': 'Congestion Control Using Leaky Bucket Algorithm'
+    # Standard Part B VTU program metadata & fallback definitions
+    partB_meta = {
+        'p1': {
+            'title': 'Bit Stuffing & Destuffing (Data Link Layer)',
+            'badge': 'Data Link • Framing • Python',
+            'summary': 'Implements bit stuffing and destuffing. Inserts a 0 bit after every five consecutive 1 bits at the transmitter to prevent unintended flag sequences, and strips the stuffed 0 bits at the receiver.',
+            'commands': [
+                {'cmd': 'python3 main.py', 'desc': 'Execute the interactive bit stuffing and destuffing simulation.'}
+            ],
+            'expected': "madvith@archlinux:~/cnc/partB/p1$ python3 main.py\nEnter the input data : 11111101\nOriginal data : 11111101\nBit Stuffed data : 111110101\nBit Destuffed data : 11111101"
+        },
+        'p2': {
+            'title': '16-Bit CRC-CCITT Error Detecting Code',
+            'badge': 'Error Detection • CRC-CCITT • Python',
+            'summary': 'Implements 16-bit CRC error detection using the standard CRC-CCITT polynomial (x^16 + x^12 + x^5 + 1). Computes transmitted codeword, allows simulated bit corruption, and checks syndrome validity at receiver.',
+            'commands': [
+                {'cmd': 'python3 main.py', 'desc': 'Run the CRC calculation and interactive error detection test.'}
+            ],
+            'expected': "madvith@archlinux:~/cnc/partB/p2$ python3 main.py\nEnter no of bits: 17\nEnter the bits : \n[Input 17 binary bits]\nInitial codeword : [1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, ...]\nTransmitted codeword : [1, 0, 0, ...]\nChoose : \n1.Introduce Error \n2.No error\n2\nReceived message : [1, 0, ...]\nValid data\nData bits : \n[1, 0, ...]"
+        },
+        'p3': {
+            'title': 'Frame Sorting Technique for Network Buffers',
+            'badge': 'Buffer Management • Sequencing • Python',
+            'summary': 'Simulates frame fragmentation into chunks with sequence numbers, models out-of-order network arrival by shuffling, and reassembles the original stream using buffer bubble sort.',
+            'commands': [
+                {'cmd': 'python3 main.py', 'desc': 'Run the frame fragmentation, shuffle, and buffer reassembly demo.'}
+            ],
+            'expected': "madvith@archlinux:~/cnc/partB/p3$ python3 main.py\nEnter the message: COMPUTERNETWORKS\nFragmented frames: [(1, 'COM'), (2, 'PUT'), (3, 'ERN'), (4, 'ETW'), (5, 'ORK'), (6, 'S')]\nShuffled frames: [(4, 'ETW'), (1, 'COM'), (6, 'S'), (2, 'PUT'), (5, 'ORK'), (3, 'ERN')]\nSorted frames: [(1, 'COM'), (2, 'PUT'), (3, 'ERN'), (4, 'ETW'), (5, 'ORK'), (6, 'S')]\nSorted message: COMPUTERNETWORKS"
+        },
+        'p4': {
+            'title': 'Distance Vector Routing Algorithm (Bellman-Ford)',
+            'badge': 'Network Layer • Bellman-Ford • C',
+            'summary': 'Implements the Distance Vector Routing algorithm in C using the Bellman-Ford equation: D_x(y) = min_v { c(x,v) + D_v(y) }. Computes routing tables and optimal next-hops across routers.',
+            'commands': [
+                {'cmd': 'gcc main.c -o dist_vector', 'desc': 'Compile the Distance Vector routing C source.'},
+                {'cmd': './dist_vector', 'desc': 'Run the router distance table calculator.'}
+            ],
+            'expected': "madvith@archlinux:~/cnc/partB/p4$ gcc main.c -o dist_vector && ./dist_vector\nEnter the number of nodes:\n3\nEnter the cost matrix:\n0 2 7\n2 0 1\n7 1 0\n\nDistance Table for router A is:\n\tNode 1 Via 1, Distance: 0\n\tNode 2 Via 2, Distance: 2\n\tNode 3 Via 2, Distance: 3\n\nDistance Table for router B is:\n\tNode 1 Via 1, Distance: 2\n\tNode 2 Via 2, Distance: 0\n\tNode 3 Via 3, Distance: 1\n\nDistance Table for router C is:\n\tNode 1 Via 2, Distance: 3\n\tNode 2 Via 2, Distance: 1\n\tNode 3 Via 3, Distance: 0"
+        },
+        'p5': {
+            'title': 'TCP Client-Server File Transfer Protocol',
+            'badge': 'Sockets • TCP / IP • Python',
+            'summary': 'Implements a client-server file transfer service using TCP sockets. The client sends the requested filename; the listening server reads the file from disk and streams bytes back to be saved locally.',
+            'commands': [
+                {'cmd': 'python3 server.py', 'desc': 'Terminal 1: Start the TCP server listener on 127.0.0.1:8888.'},
+                {'cmd': 'python3 client.py', 'desc': 'Terminal 2: Run client, request a filename, and receive file contents.'}
+            ],
+            'expected': "[Terminal 1 - Server]\nmadvith@archlinux:~/cnc/partB/p5$ python3 server.py\nServer is listening on 127.0.0.1 port 8888\nAccepted connection from ('127.0.0.1', 52348)\nReceived file name = sample.txt\nFile sent\n\n[Terminal 2 - Client]\nmadvith@archlinux:~/cnc/partB/p5$ python3 client.py\nEnter the file name: sample.txt\nFile contents:\nHello from Computer Networks Lab!\nFile received and saved as 'received_sample.txt'"
+        },
+        'p6': {
+            'title': 'UDP Client-Server Calculator Service',
+            'badge': 'Sockets • UDP Datagram • Python',
+            'summary': 'Implements a client-server arithmetic expression evaluator using connectionless UDP sockets. The client sends an expression (e.g. 24*5); the server evaluates it and sends back the datagram result.',
+            'commands': [
+                {'cmd': 'python3 server.py', 'desc': 'Terminal 1: Start the UDP calculator server listener on port 8081.'},
+                {'cmd': 'python3 client.py', 'desc': 'Terminal 2: Send math expression to evaluate over UDP.'}
+            ],
+            'expected': "[Terminal 1 - Server]\nmadvith@archlinux:~/cnc/partB/p6$ python3 server.py\nUDP server started\n\n[Terminal 2 - Client]\nmadvith@archlinux:~/cnc/partB/p6$ python3 client.py\nEnter the expression: 24*5\nResult : 120.0"
+        }
     }
 
     # 1. PROCESS PART A
@@ -290,23 +341,35 @@ END{
             p_id = f"partB-{p_dir}"
             p_num_str = re.search(r'\d+', p_dir).group(0) if re.search(r'\d+', p_dir) else p_dir
 
-            # Read README.md as the Question
-            raw_readme = read_text(os.path.join(p_path, 'README.md')).strip()
-            fallback_title = partB_titles.get(p_dir, f'Program {p_num_str}: Python Implementation')
+            meta = partB_meta.get(p_dir, {
+                'title': f'Program {p_num_str}: Network Implementation',
+                'badge': f'Part B • P{p_num_str}',
+                'summary': f'Part B experiment {p_num_str}.',
+                'commands': [{'cmd': 'python3 main.py', 'desc': 'Run the script.'}],
+                'expected': f'Program {p_num_str} executed successfully.'
+            })
+
+            # Read README.md / REAME.md as the Question
+            readme_candidates = ['README.md', 'REAME.md', 'readme.md', 'README.txt']
+            raw_readme = ''
+            for rc in readme_candidates:
+                rc_path = os.path.join(p_path, rc)
+                if os.path.isfile(rc_path):
+                    raw_readme = read_text(rc_path).strip()
+                    break
 
             if raw_readme:
                 readme_text = raw_readme
-                first_line = raw_readme.split('\n')[0].strip('# ').strip()
-                title = first_line if (len(first_line) > 3 and len(first_line) < 60) else fallback_title
             else:
-                title = fallback_title
-                readme_text = f"Write a Python program to implement {fallback_title}."
+                readme_text = f"Write a program to implement {meta['title']}."
+
+            title = meta['title']
 
             # Collect all code files (.py, .c, etc. - no fixed filename required!)
             files = []
             dir_contents = sorted(os.listdir(p_path))
             for f_name in dir_contents:
-                if f_name.startswith('.') or f_name in ['README.md', '__pycache__', '.pytest_cache']:
+                if f_name.startswith('.') or f_name.lower() in ['readme.md', 'reame.md', 'readme.txt', '__pycache__', '.pytest_cache']:
                     continue
                 f_full = os.path.join(p_path, f_name)
                 if os.path.isfile(f_full):
@@ -318,33 +381,19 @@ END{
                         'name': f_name,
                         'lang': get_lang(f_name),
                         'path': os.path.relpath(f_full, BASE_DIR),
-                        'description': f'Python source: {f_name}',
+                        'description': f'Source file: {f_name}',
                         'content': content
                     })
 
             # If folder has no code files at all, provide starter file
             if not files:
                 files.append({
-                    'name': 'solution.py',
+                    'name': 'main.py',
                     'lang': 'python',
-                    'path': f'partB/{p_dir}/solution.py',
+                    'path': f'partB/{p_dir}/main.py',
                     'description': f'Starter Python file for Program {p_num_str}',
-                    'content': f'# Part B - Program {p_num_str}: {title}\n# Place your Python implementation files in partB/{p_dir}/\n\ndef main():\n    print("Program {p_num_str} ready for implementation")\n\nif __name__ == "__main__":\n    main()\n'
+                    'content': f'# Part B - Program {p_num_str}: {title}\n# Place your implementation files in partB/{p_dir}/\n\ndef main():\n    print("Program {p_num_str} ready for implementation")\n\nif __name__ == "__main__":\n    main()\n'
                 })
-
-            # Build Python execution commands automatically
-            has_server = any('server' in f['name'].lower() for f in files)
-            has_client = any('client' in f['name'].lower() for f in files)
-
-            commands = []
-            if has_server and has_client:
-                commands.append({'cmd': 'python3 server.py', 'desc': 'Terminal 1: Start the server listener.'})
-                commands.append({'cmd': 'python3 client.py', 'desc': 'Terminal 2: Run the client application to connect.'})
-                expected_out = f"madvith@archlinux:~/cnc/partB/{p_dir}$ python3 server.py\n[Server listening on 127.0.0.1:8080...]\n[Connection established]\n[Data transfer verified]"
-            else:
-                main_file = files[0]['name'] if files else 'solution.py'
-                commands.append({'cmd': f'python3 {main_file}', 'desc': f'Execute the Python script {main_file}.'})
-                expected_out = f"madvith@archlinux:~/cnc/partB/{p_dir}$ python3 {main_file}\nProgram {p_num_str} executed successfully."
 
             programs.append({
                 'id': p_id,
@@ -353,15 +402,15 @@ END{
                 'category': 'partB',
                 'num': f'Program {p_num_str}',
                 'title': title,
-                'badge': f'Part B • Python • {len(files)} file{"s" if len(files) > 1 else ""}',
+                'badge': meta['badge'],
                 'question': readme_text,
-                'summary': f'Part B Network Program {p_num_str} implemented in Python.',
+                'summary': meta['summary'],
                 'hasTopology': False,  # NO topology visualization as requested!
                 'topology': None,
                 'files': files,
                 'execution': {
-                    'commands': commands,
-                    'expected': expected_out
+                    'commands': meta['commands'],
+                    'expected': meta['expected']
                 }
             })
 
