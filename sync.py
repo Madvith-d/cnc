@@ -109,7 +109,7 @@ def build_catalog():
                     {'cmd': 'ns main.tcl', 'desc': 'Simulates Ethernet LAN transmission and animates CSMA/CD bus in NAM.'},
                     {'cmd': 'awk -f main.awk out.tr', 'desc': 'Computes LAN throughput from trace timestamps and packet sizes.'}
                 ],
-                'expected': 'Throughput : 179.74 Kbps'
+                'expected': 'Throughput : 1813.90'
             }
         },
         'p4': {
@@ -228,75 +228,6 @@ def build_catalog():
                         'description': f'{f_name} script for {p_dir.upper()}',
                         'content': read_text(f_full)
                     })
-
-            # Custom recommended fixes for p2 & p4 (only if not already on disk)
-            if p_dir == 'p2' and not any(f['name'] == 'main_fixed.awk' for f in files):
-                files.append({
-                    'name': 'main_fixed.awk',
-                    'lang': 'awk',
-                    'path': 'partA/p2/main_fixed.awk (Recommended Fix)',
-                    'description': 'Fixed AWK script checking $5 == "tcp" instead of "ftp".',
-                    'content': '''BEGIN{
-\tntcp = 0;
-\tnudp = 0;
-\tsSize = 0;
-\tstartTime = 0;
-\tstopTime = 0;
-\ttput = 0;
-}
-{
-\ttype = $5;
-\tevent = $1;
-\ttime = $2;
-\tsize = $6;
-
-\tif(event == "+"){
-\t\tif(time < startTime){
-\t\t\tstartTime = time;
-\t\t}
-\t}
-
-\tif(event == "+"){
-\t\tif(time > stopTime){
-\t\t\tstopTime = time;
-\t\t}
-
-\t\tsSize += size;
-\t}
-
-\t# Note: In NS-2 trace files, column 5 is "tcp", not "ftp"!
-\tif(type == "tcp"){
-\t\tntcp++;
-\t}
-\tif(type == "cbr"){
-\t\tnudp++;
-\t}
-}
-END{
-\ttput =  (sSize / (stopTime - startTime)) * (8 / 1000);
-\tprintf("No of tcp packets : %d \\n", ntcp);
-\tprintf("no of udp packet : %d \\n", nudp);
-\tprintf("Throughput : %.2f Kbps\\n", tput);
-}'''
-                })
-
-            if p_dir == 'p4' and not any(f['name'] == 'main_fixed.awk' for f in files):
-                files.append({
-                    'name': 'main_fixed.awk',
-                    'lang': 'awk',
-                    'path': 'partA/p4/main_fixed.awk (Recommended Fix)',
-                    'description': 'Formatted AWK script using printf for clean numerical xgraph output.',
-                    'content': '''BEGIN{
-}
-{
-\tif($6 == "cwnd_") {
-\t\t# $1 is simulation time, $7 is congestion window size (cwnd_)
-\t\tprintf("%f\\t%f\\n", $1, $7);
-\t}
-}
-END{
-}'''
-                })
 
             meta = partA_meta.get(p_dir, {
                 'num': f'Program {re.search(r"\\d+", p_dir).group(0) if re.search(r"\\d+", p_dir) else p_dir}',

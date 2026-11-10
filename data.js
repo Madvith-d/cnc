@@ -132,13 +132,6 @@ window.CNC_DATA = {
           "path": "partA/p2/main.tcl",
           "description": "main.tcl script for P2",
           "content": "set ns [new Simulator]\n\nset tf [open out.tr w]\n\nset nf [open out.nam w]\n\n$ns namtrace-all $nf\n\n$ns trace-all $tf\n\nproc finish {} {\n\tglobal ns nf tf\n\t$ns flush-trace\n\tclose $nf\n\tclose $tf\n\texec nam out.nam &\n\texit 0\n}\n\nset n0 [$ns node]\nset n1 [$ns node]\nset n2 [$ns node]\nset n3 [$ns node]\n$ns duplex-link $n0 $n2 1Mb 10ms DropTail\n\n$ns duplex-link $n1 $n2 1Mb 10ms DropTail\n\n$ns duplex-link $n2 $n3 1Mb 10ms DropTail\n\n$ns queue-limit $n0 $n2 50\n$ns queue-limit $n1 $n2 50\n$ns queue-limit $n2 $n3 50\n\nset tcp [new Agent/TCP]\n$ns attach-agent $n0 $tcp\nset tcpSink [new Agent/TCPSink]\n$ns attach-agent $n3 $tcpSink\n$ns connect $tcp $tcpSink\n\nset ftp [new Application/FTP]\n$ftp attach-agent $tcp\n\nset udp [new Agent/UDP]\n$ns attach-agent $n1 $udp\nset null [new Agent/Null]\n$ns attach-agent $n3 $null\n$ns connect $udp $null\n\nset cbr [new Application/Traffic/CBR]\n$cbr set interval_ 0.005\n$cbr set packetSize_ 500\n$cbr attach-agent $udp\n\n$ns at 0.5 \"$cbr start\"\n$ns at 5.5 \"$cbr stop\"\n\n$ns at 0.5 \"$ftp start\"\n$ns at 5.0 \"$ftp stop\"\n\n$ns run\n"
-        },
-        {
-          "name": "main_fixed.awk",
-          "lang": "awk",
-          "path": "partA/p2/main_fixed.awk (Recommended Fix)",
-          "description": "Fixed AWK script checking $5 == \"tcp\" instead of \"ftp\".",
-          "content": "BEGIN{\n\tntcp = 0;\n\tnudp = 0;\n\tsSize = 0;\n\tstartTime = 0;\n\tstopTime = 0;\n\ttput = 0;\n}\n{\n\ttype = $5;\n\tevent = $1;\n\ttime = $2;\n\tsize = $6;\n\n\tif(event == \"+\"){\n\t\tif(time < startTime){\n\t\t\tstartTime = time;\n\t\t}\n\t}\n\n\tif(event == \"+\"){\n\t\tif(time > stopTime){\n\t\t\tstopTime = time;\n\t\t}\n\n\t\tsSize += size;\n\t}\n\n\t# Note: In NS-2 trace files, column 5 is \"tcp\", not \"ftp\"!\n\tif(type == \"tcp\"){\n\t\tntcp++;\n\t}\n\tif(type == \"cbr\"){\n\t\tnudp++;\n\t}\n}\nEND{\n\ttput =  (sSize / (stopTime - startTime)) * (8 / 1000);\n\tprintf(\"No of tcp packets : %d \\n\", ntcp);\n\tprintf(\"no of udp packet : %d \\n\", nudp);\n\tprintf(\"Throughput : %.2f Kbps\\n\", tput);\n}"
         }
       ],
       "execution": {
@@ -219,7 +212,7 @@ window.CNC_DATA = {
             "desc": "Computes LAN throughput from trace timestamps and packet sizes."
           }
         ],
-        "expected": "Throughput : 179.74 Kbps"
+        "expected": "Throughput : 1813.90"
       }
     },
     {
@@ -276,13 +269,6 @@ window.CNC_DATA = {
           "path": "partA/p4/main.tcl",
           "description": "main.tcl script for P4",
           "content": "# This script is created by NSG2 beta1\n# <http://wushoupong.googlepages.com/nsg>\n\n#===================================\n#     Simulation parameters setup\n#===================================\nset val(stop)   15.0                         ;# time of simulation end\n\n#===================================\n#        Initialization        \n#===================================\n#Create a ns simulator\nset ns [new Simulator]\n\n#Open the NS trace file\nset tracefile [open out.tr w]\n$ns trace-all $tracefile\n\n#Open the NAM trace file\nset namfile [open out.nam w]\n$ns namtrace-all $namfile\n\n#===================================\n#        Nodes Definition        \n#===================================\n#Create 6 nodes\nset n0 [$ns node]\nset n1 [$ns node]\nset n2 [$ns node]\nset n3 [$ns node]\nset n4 [$ns node]\nset n5 [$ns node]\nset n6 [$ns node]\nset n7 [$ns node]\nset n8 [$ns node]\n\n\n$n0 color \"blue\"\n$n0 label \"Src1\"\n\n$n1 color \"blue\"\n$n1 label \"Src2\"\n\n$n8 color \"red\"\n$n8 label \"Dst1\"\n\n$n6 color \"red\"\n$n6 label \"Dst2\"\n#===================================\n#        Links Definition        \n#===================================\n#Createlinks between nodes\n$ns make-lan \"$n0 $n1 $n2 $n3 $n4 $n5 $n6 $n7\" 10Mb 10ms LL Queue/DropTail Mac/802_3 \n$ns duplex-link $n7 $n8 1.0Mb 1ms DropTail\n$ns queue-limit $n7 $n8 5\n\n#Give node position (for NAM)\n$ns duplex-link-op $n7 $n8 orient right-down\n\n#===================================\n#        Agents Definition        \n#===================================\n#Setup a TCP connection\nset tcp0 [new Agent/TCP]\n$ns attach-agent $n0 $tcp0\nset sink1 [new Agent/TCPSink]\n$ns attach-agent $n8 $sink1\n$ns connect $tcp0 $sink1\n$tcp0 set packetSize_ 1500\n\n#Setup a TCP connection\nset tcp1 [new Agent/TCP]\n$ns attach-agent $n1 $tcp1\nset sink2 [new Agent/TCPSink]\n$ns attach-agent $n6 $sink2\n$ns connect $tcp1 $sink2\n$tcp1 set packetSize_ 1500\n\n\n#===================================\n#        Applications Definition        \n#===================================\n#Setup a FTP Application over TCP connection\nset ftp0 [new Application/FTP]\n$ftp0 attach-agent $tcp0\n$ns at 0.5 \"$ftp0 start\"\n$ns at 5.0 \"$ftp0 stop\"\n$ns at 5.5 \"$ftp0 start\"\n$ns at 12.0 \"$ftp0 stop\"\n\n#Setup a FTP Application over TCP connection\nset ftp1 [new Application/FTP]\n$ftp1 attach-agent $tcp1\n$ns at 1.0 \"$ftp1 start\"\n$ns at 6.0 \"$ftp1 stop\"\n$ns at 7.0 \"$ftp1 start\"\n$ns at 13.0 \"$ftp1 stop\"\n\nset file1 [open file1.tr w]\n$tcp0 attach $file1\n\nset file2 [open file2.tr w]\n$tcp1 attach $file2\n\n$tcp0 trace cwnd_\n$tcp1 trace cwnd_\n\n#===================================\n#        Termination        \n#===================================\n#Define a 'finish' procedure\nproc finish {} {\n    global ns tracefile namfile\n    $ns flush-trace\n    close $tracefile\n    close $namfile\n    exec nam out.nam &\n    exit 0\n}\n$ns at $val(stop) \"$ns nam-end-wireless $val(stop)\"\n$ns at $val(stop) \"finish\"\n$ns at $val(stop) \"puts \\\"done\\\" ; $ns halt\"\n$ns run\n\n"
-        },
-        {
-          "name": "main_fixed.awk",
-          "lang": "awk",
-          "path": "partA/p4/main_fixed.awk (Recommended Fix)",
-          "description": "Formatted AWK script using printf for clean numerical xgraph output.",
-          "content": "BEGIN{\n}\n{\n\tif($6 == \"cwnd_\") {\n\t\t# $1 is simulation time, $7 is congestion window size (cwnd_)\n\t\tprintf(\"%f\\t%f\\n\", $1, $7);\n\t}\n}\nEND{\n}"
         }
       ],
       "execution": {
