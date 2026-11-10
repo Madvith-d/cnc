@@ -1,37 +1,49 @@
-# tcp_server.py - sends the requested file to the client
+
 import socket
 import os
 
-HOST = "127.0.0.1"  # this computer only (localhost)
-PORT = 8888  # port number the server listens on
-BUFFER_SIZE = 1024  # maximum bytes received by one recv()
+# Define server address and port number
+server_address = ('localhost', 8888)
 
-# create a TCP socket, bind it to (HOST, PORT) and start listening
+# Create a TCP socket
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-server_socket.bind((HOST, PORT))
+
+# Bind the socket to the server address
+server_socket.bind(server_address)
+
+# Listen for incoming client connections
 server_socket.listen(1)
-print("Server is listening on", HOST, "port", PORT)
 
-try:
-    while True:
-        client_socket, client_address = server_socket.accept()
-        with client_socket:
-            print("Accepted connection from", client_address)
+print("Server is listening for incoming connections...")
 
-            # receive the file name sent by the client
-            file_name = client_socket.recv(BUFFER_SIZE).decode()
-            print("Received file name =", file_name)
+while True:
 
-            # send the contents if the file exists, otherwise an error text
-            if os.path.isfile(file_name):
-                with open(file_name, "rb") as file:
-                    client_socket.sendall(file.read())
-                print("File sent")
-            else:
-                client_socket.sendall(b"File not found")
-                print("File not found")
-except KeyboardInterrupt:
-    print("\nServer stopped")
-finally:
-    server_socket.close()
+    # Accept a client connection
+    client_socket, client_address = server_socket.accept()
+
+    print("Accepted connection from", client_address)
+
+    # Receive the file name from the client
+    file_name = client_socket.recv(1024).decode()
+
+    print("Received file name =", file_name)
+
+    # Check whether the requested file exists
+    if os.path.exists(file_name):
+
+        # Open the file in read binary mode
+        with open(file_name, 'rb') as file:
+
+            # Read the contents of the file
+            file_contents = file.read()
+
+        # Send file contents to the client
+        client_socket.send(file_contents)
+
+    else:
+
+        # Send an error message if file does not exist
+        client_socket.send(b'File not found')
+
+    # Close the client connection
+    client_socket.close()
