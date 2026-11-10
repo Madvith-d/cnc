@@ -17,7 +17,7 @@ BEGIN{
 		}
 	}
 
-	if(event == "+"){
+	if(event == "r"){
 		if(time > stopTime){
 			stopTime = time;
 		}

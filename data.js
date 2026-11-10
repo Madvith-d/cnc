@@ -198,7 +198,7 @@ window.CNC_DATA = {
           "lang": "awk",
           "path": "partA/p3/main.awk",
           "description": "main.awk script for P3",
-          "content": "BEGIN{\n\n\tsSize = 0;\n\tstartTime = 0;\n\tstopTime = 0;\n\ttput = 0;\n}\n{\n\ttype = $5;\n\tevent = $1;\n\ttime = $2;\n\tsize = $6;\n\n\tif(event == \"+\"){\n\t\tif(time < startTime){\n\t\t\tstartTime = time;\n\t\t}\n\t}\n\n\tif(event == \"+\"){\n\t\tif(time > stopTime){\n\t\t\tstopTime = time;\n\t\t}\n\n\t\tsSize += size;\n\t}\n\n\n}\nEND{\n\ttput =  (sSize / (stopTime - startTime)) * (8 / 1000);\n\tprintf(\"Throughput : %.2f \", tput);\n}\n"
+          "content": "BEGIN{\n\n\tsSize = 0;\n\tstartTime = 0;\n\tstopTime = 0;\n\ttput = 0;\n}\n{\n\ttype = $5;\n\tevent = $1;\n\ttime = $2;\n\tsize = $6;\n\n\tif(event == \"+\"){\n\t\tif(time < startTime){\n\t\t\tstartTime = time;\n\t\t}\n\t}\n\n\tif(event == \"r\"){\n\t\tif(time > stopTime){\n\t\t\tstopTime = time;\n\t\t}\n\n\t\tsSize += size;\n\t}\n\n\n}\nEND{\n\ttput =  (sSize / (stopTime - startTime)) * (8 / 1000);\n\tprintf(\"Throughput : %.2f \", tput);\n}\n"
         },
         {
           "name": "main.tcl",
