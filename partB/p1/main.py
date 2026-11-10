@@ -1,45 +1,75 @@
-# Experiment 5: Bit Stuffing and Destuffing
-# Concept: Insert a '0' after five consecutive '1's at the transmitter,
-# and remove that '0' at the receiver to maintain frame delineation.
 
-def bit_stuffing(data):
-    stuffed_data = ""
+def sender():
+    # Read the number of bits from the user
+    n = int(input("Enter the no. of bits: "))
+
+    # Read the input data bits
+    print("Enter", n, "bits:")
+    data = [int(input()) for _ in range(n)]
+
+    # Flag pattern used to indicate the beginning and end of a frame
+    add = [0, 1, 1, 1, 1, 1, 1, 0]
+
+    # Initialize the frame with the starting flag
+    frame = []
+    frame += add
+
     count = 0
-    for bit in data:
-        stuffed_data += bit
-        if bit == '1':
+
+    # Perform bit stuffing
+    for i in data:
+
+        # Insert a 0 after every sequence of five consecutive 1s
+        if count == 5:
+            frame.append(0)
+            count = 0
+
+        # Append the original data bit
+        frame.append(i)
+
+        # Count consecutive 1s
+        if i == 1:
             count += 1
-            if count == 5:
-                stuffed_data += '0'
-                count = 0
         else:
             count = 0
-    return stuffed_data
+
+    # Append the ending flag to the frame
+    frame += add
+
+    print("Sent Frame:", frame)
+
+    # Pass the frame to the receiver
+    receiver(frame)
 
 
-def bit_destuffing(stuffed_data):
-    destuffed_data = ""
+def receiver(frame):
+    # Initialize an empty list to store received data
+    data = []
+
     count = 0
-    skip_next = False
-    for bit in stuffed_data:
-        if skip_next:
-            skip_next = False
-            continue
-        destuffed_data += bit
-        if bit == '1':
+
+    # Remove the starting and ending flags
+    # Process only the actual stuffed data
+    for i in frame[8:-8]:
+
+        if i == 1:
+            data.append(i)
             count += 1
+
+        elif i == 0:
+
+            # If five consecutive 1s were received,
+            # this 0 is a stuffed bit and must be removed
             if count == 5:
-                skip_next = True
                 count = 0
-        else:
-            count = 0
-    return destuffed_data
+
+            else:
+                # Otherwise, it is an original data bit
+                data.append(i)
+                count = 0
+
+    print("Data Received is:", data)
 
 
-
-data = input("Enter the input data :")
-print("Original data :", data)
-stuffed = bit_stuffing(data)
-print("Bit Stuffed data :", stuffed)
-destuffed = bit_destuffing(stuffed)
-print("Bit Destuffed data :", destuffed)
+# Main function call
+sender()
