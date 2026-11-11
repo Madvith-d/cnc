@@ -124,7 +124,7 @@ window.CNC_DATA = {
           "lang": "awk",
           "path": "partA/p2/main.awk",
           "description": "main.awk script for P2",
-          "content": "BEGIN{\n\tntcp = 0;\n\tnudp = 0;\n\tsSize = 0;\n\tstartTime = 0;\n\tstopTime = 0;\n\ttput = 0;\n}\n{\n\ttype = $5;\n\tevent = $1;\n\ttime = $2;\n\tsize = $6;\n\n\tif(event == \"+\"){\n\t\tif(time < startTime){\n\t\t\tstartTime = time;\n\t\t}\n\t}\n\n\tif(event == \"+\"){\n\t\tif(time > stopTime){\n\t\t\tstopTime = time;\n\t\t}\n\n\t\tsSize += size;\n\t}\n\n\tif(type == \"tcp\"){\n\t\tntcp++;\n\t}\n\tif(type == \"cbr\"){\n\t\tnudp++;\n\t}\n}\nEND{\n\ttput =  (sSize / (stopTime - startTime)) * (8 / 1000);\n\tprintf(\"No of tcp packets : %d \\n\", ntcp);\n\tprintf(\"no of udp packet : %d \\n\",nudp);\n\tprintf(\"Throughput : %.2f \", tput);\n}\n"
+          "content": "BEGIN{\n\tntcp = 0;\n\tnudp = 0;\n\tsSize = 0;\n\tstartTime = 0;\n\tstopTime = 0;\n\ttput = 0;\n}\n{\n\ttype = $5;\n\tevent = $1;\n\ttime = $2;\n\tsize = $6;\n\n\tif(event == \"+\"){\n\t\tif(time < startTime){\n\t\t\tstartTime = time;\n\t\t}\n\t}\n\n\tif(event == \"r\"){\n\t\tif(time > stopTime){\n\t\t\tstopTime = time;\n\t\t}\n\n\t\tsSize += size;\n\t}\n\n\tif(type == \"tcp\"){\n\t\tntcp++;\n\t}\n\tif(type == \"cbr\"){\n\t\tnudp++;\n\t}\n}\nEND{\n\ttput =  (sSize / (stopTime - startTime)) * (8 / 1000);\n\tprintf(\"No of tcp packets : %d \\n\", ntcp);\n\tprintf(\"no of udp packet : %d \\n\",nudp);\n\tprintf(\"Throughput : %.2f \", tput);\n}\n"
         },
         {
           "name": "main.tcl",
@@ -256,6 +256,20 @@ window.CNC_DATA = {
         "traffic": "FTP0 (0.5s-5.0s, 5.5s-12.0s); FTP1 (1.0s-6.0s, 7.0s-13.0s)"
       },
       "files": [
+        {
+          "name": "a",
+          "lang": "text",
+          "path": "partA/p4/a",
+          "description": "a script for P4",
+          "content": ""
+        },
+        {
+          "name": "b",
+          "lang": "text",
+          "path": "partA/p4/b",
+          "description": "b script for P4",
+          "content": ""
+        },
         {
           "name": "main.awk",
           "lang": "awk",
