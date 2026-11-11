@@ -223,7 +223,7 @@ window.CNC_DATA = {
       "num": "Program 4",
       "title": "Ethernet LAN Multi-Traffic, Collisions & Congestion Window (cwnd)",
       "badge": "Ethernet LAN \u2022 Congestion Window \u2022 2 TCP Flows",
-      "question": "Simulate an Ethernet LAN using N nodes and set multiple traffic nodes and determine collision across different nodes, also plot congestion window for different source/destination.",
+      "question": "Simulate an Ethernet LAN using N nodes and set multiple traffic nodes and determine collision across different nodes, also plot congestion window for different source/destination.\n\nSteps to generate graph:\n1. `ns main.tcl`\n2. `awk -f main.awk file1.tr > a`\n3. `awk -f main.awk file2.tr > b`\n4. `xgraph a b &`",
       "summary": "Simulate an Ethernet LAN using N nodes with multiple simultaneous TCP traffic sources. Trace and extract TCP congestion window (cwnd_) dynamics to analyze window growth, timeouts, and collision avoidance.",
       "hasTopology": true,
       "topology": {
@@ -289,23 +289,23 @@ window.CNC_DATA = {
         "commands": [
           {
             "cmd": "ns main.tcl",
-            "desc": "Executes simulation, outputs tracefile, and logs cwnd_ to file1.tr and file2.tr."
+            "desc": "Executes simulation and logs cwnd_ traces to file1.tr and file2.tr."
           },
           {
-            "cmd": "awk -f main.awk file1.tr > graph1.tr",
-            "desc": "Extracts time and congestion window values for Flow 1 (n0 -> n8)."
+            "cmd": "awk -f main.awk file1.tr > a",
+            "desc": "Extracts TCP0 congestion window data into file a."
           },
           {
-            "cmd": "awk -f main.awk file2.tr > graph2.tr",
-            "desc": "Extracts time and congestion window values for Flow 2 (n1 -> n6)."
+            "cmd": "awk -f main.awk file2.tr > b",
+            "desc": "Extracts TCP1 congestion window data into file b."
           },
           {
-            "cmd": "xgraph graph1.tr graph2.tr &",
-            "desc": "Plots cwnd vs time graphs for both TCP flows using xgraph."
+            "cmd": "xgraph a b &",
+            "desc": "Plots congestion window vs time curves for both flows in xgraph."
           }
         ],
-        "tip": "AWK Syntax Tip: In main.awk line 5, use printf(\"%f\\t%f\\n\", $1, $7); instead of print(...) to format time ($1) and cwnd_ ($7) as clean tab-separated numerical columns for xgraph.",
-        "expected": "done\nGenerated graph1.tr and graph2.tr for xgraph plotting."
+        "tip": "Graph Generation Steps: Run simulation (ns main.tcl), extract cwnd values (awk -f main.awk file1.tr > a and awk -f main.awk file2.tr > b), then plot with xgraph a b &.",
+        "expected": "madvith@archlinux:~/cnc/partA/p4$ ns main.tcl\ndone\nmadvith@archlinux:~/cnc/partA/p4$ awk -f main.awk file1.tr > a\nmadvith@archlinux:~/cnc/partA/p4$ awk -f main.awk file2.tr > b\nmadvith@archlinux:~/cnc/partA/p4$ xgraph a b &\n[xgraph window opens displaying cwnd vs time curves for flow a and flow b]"
       }
     },
     {
