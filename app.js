@@ -619,11 +619,11 @@
       </div>
 
       <header class="view-header">
-        <div class="view-badge-row">
+        <h2 class="view-title">${escapeHtml(prog.title)}</h2>
+        <div class="view-meta-row">
           <span class="pill-badge">${escapeHtml(prog.num)}</span>
           <span class="pill-badge ${prog.category === 'partB' ? 'emerald' : 'blue'}">${escapeHtml(prog.badge)}</span>
         </div>
-        <h2 class="view-title">${escapeHtml(prog.title)}</h2>
         <p class="view-summary">${escapeHtml(prog.summary)}</p>
       </header>
 
@@ -876,7 +876,7 @@
     const copyQBtn = document.getElementById('copyQuestionBtn');
     if (copyQBtn && prog.question) {
       copyQBtn.addEventListener('click', () => {
-        copyToClipboard(prog.question, 'Problem statement copied!');
+        copyToClipboard(prog.question, 'Problem statement copied!', copyQBtn);
       });
     }
 
@@ -884,7 +884,7 @@
     const copyCBtn = document.getElementById('copyCodeBtn');
     if (copyCBtn && activeFile) {
       copyCBtn.addEventListener('click', () => {
-        copyToClipboard(activeFile.content, `${activeFile.name} copied to clipboard!`);
+        copyToClipboard(activeFile.content, `${activeFile.name} copied to clipboard!`, copyCBtn);
       });
     }
 
@@ -901,21 +901,40 @@
       chip.addEventListener('click', () => {
         const cmd = chip.getAttribute('data-copy');
         if (cmd) {
-          copyToClipboard(cmd, 'Command copied!');
+          copyToClipboard(cmd, 'Command copied!', chip);
         }
       });
     });
   }
 
-  function copyToClipboard(text, message) {
+  function copyToClipboard(text, message, btnEl) {
+    let origHtml = null;
+    if (btnEl) {
+      origHtml = btnEl.innerHTML;
+      btnEl.innerHTML = '<span style="color: var(--accent-emerald);">✓</span><span style="color: var(--accent-emerald); font-weight: 600;">Copied!</span>';
+      btnEl.classList.add('copied');
+    }
+
+    const resetBtn = () => {
+      if (btnEl && origHtml) {
+        setTimeout(() => {
+          btnEl.innerHTML = origHtml;
+          btnEl.classList.remove('copied');
+        }, 1800);
+      }
+    };
+
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(() => {
         showToast(message || 'Copied to clipboard!');
+        resetBtn();
       }).catch(() => {
         fallbackCopy(text, message);
+        resetBtn();
       });
     } else {
       fallbackCopy(text, message);
+      resetBtn();
     }
   }
 
@@ -1039,8 +1058,36 @@
     // Dynamic sidebar generation from data catalog
     renderSidebarNav();
 
+    const sidebar = document.getElementById('appSidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+
+    function openSidebar() {
+      sidebar?.classList.add('open');
+      overlay?.classList.add('show');
+      document.body.classList.add('sidebar-open');
+    }
+
+    function closeSidebar() {
+      sidebar?.classList.remove('open');
+      overlay?.classList.remove('show');
+      document.body.classList.remove('sidebar-open');
+    }
+
+    // Mobile drawer toggle buttons
+    document.getElementById('mobileMenuBtn')?.addEventListener('click', openSidebar);
+    document.getElementById('sidebarCloseBtn')?.addEventListener('click', closeSidebar);
+    overlay?.addEventListener('click', closeSidebar);
+
+    // Mobile search button in topbar opens drawer and focuses search
+    document.getElementById('mobileSearchBtn')?.addEventListener('click', () => {
+      openSidebar();
+      setTimeout(() => {
+        document.getElementById('sidebarSearch')?.focus();
+      }, 180);
+    });
+
     // Navigation Clicks (delegated to support dynamically rendered items)
-    document.querySelector('.app-sidebar')?.addEventListener('click', (e) => {
+    sidebar?.addEventListener('click', (e) => {
       const btn = e.target.closest('.nav-item-btn');
       if (!btn) return;
       const id = btn.getAttribute('data-id');
@@ -1050,11 +1097,27 @@
         location.hash = id;
         renderView();
         window.scrollTo({ top: 0, behavior: 'smooth' });
-
-        // Close mobile menu if open
-        document.querySelector('.app-sidebar')?.classList.remove('open');
+        closeSidebar();
       }
     });
+
+    // In-drawer live filter search
+    const sidebarSearchInput = document.getElementById('sidebarSearch');
+    if (sidebarSearchInput) {
+      sidebarSearchInput.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        const allNavItems = sidebar?.querySelectorAll('.nav-list li');
+        if (!allNavItems) return;
+
+        allNavItems.forEach(li => {
+          const btn = li.querySelector('.nav-item-btn');
+          if (!btn) return;
+          const text = btn.textContent.toLowerCase();
+          const match = !query || text.includes(query);
+          li.style.display = match ? '' : 'none';
+        });
+      });
+    }
 
     // Theme Toggle
     const themeBtn = document.getElementById('themeToggleBtn');
@@ -1067,22 +1130,13 @@
       });
     }
 
-    // Mobile Menu Toggle
-    const mobileBtn = document.getElementById('mobileMenuBtn');
-    if (mobileBtn) {
-      mobileBtn.addEventListener('click', () => {
-        document.querySelector('.app-sidebar')?.classList.toggle('open');
-      });
-    }
-
-    // Global Search
+    // Global Search (Desktop)
     const searchInput = document.getElementById('globalSearch');
     if (searchInput) {
       searchInput.addEventListener('input', (e) => {
         const query = e.target.value.toLowerCase().trim();
         if (!query) return;
 
-        // Find matching program
         const data = window.CNC_DATA;
         if (!data) return;
 
@@ -1102,8 +1156,12 @@
 
     // Keyboard Shortcuts
     document.addEventListener('keydown', (e) => {
+      // Escape closes mobile drawer
+      if (e.key === 'Escape' && sidebar?.classList.contains('open')) {
+        closeSidebar();
+      }
       // Focus search on '/'
-      if (e.key === '/' && document.activeElement !== searchInput) {
+      if (e.key === '/' && document.activeElement !== searchInput && document.activeElement !== sidebarSearchInput) {
         e.preventDefault();
         searchInput?.focus();
       }
